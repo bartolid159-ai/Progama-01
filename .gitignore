@@ -1,0 +1,83 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build and Output
+dist/
+build/
+out/
+target/
+coverage/
+.nyc_output/
+.parcel-cache/
+.cache/
+.next/
+.nuxt/
+
+# Environment Variables and Secrets
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*
+*.env
+.envrc
+secrets.*
+credentials.*
+*.pem
+*.key
+*.pub
+
+# Databases (SQLite and others)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.sqlitedb
+test-data/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS Specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+test-results/
+
+# Miscellaneous
+.serverless/
+.fusebox/
+.dynamodb/
+.terraform/
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
