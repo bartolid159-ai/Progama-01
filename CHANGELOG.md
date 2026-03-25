@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.0 (2026-03-25)
+
+
+### Features
+
+* Include .github workflows and restore setup ([7d220a0](https://github.com/bartolid159-ai/Progama-01/commit/7d220a0e2c302f9a2d438927478f7f9afcc1c496))
+* initial project push and synchronization ([6e08a85](https://github.com/bartolid159-ai/Progama-01/commit/6e08a85918de69da7a60c465d9e19f6e713bd938))
+* Subir flujos de trabajo de Actions y base del proyecto ([2740e69](https://github.com/bartolid159-ai/Progama-01/commit/2740e69fb2706207586bb1aa7ff13cc940e1831d))
+
+
+### Bug Fixes
+
+* update release-please action provider and map GITHUB_TOKEN ([ff980c7](https://github.com/bartolid159-ai/Progama-01/commit/ff980c7b31ca02379da2f13adf295882ae7d6f6a))
+* update release-please action to googleapis and configure Node 24 support ([76df647](https://github.com/bartolid159-ai/Progama-01/commit/76df647be25f753dea8e7a0a1b5120856ab6f63b))
+
 ## [1.1.0](https://github.com/bartolid159-ai/Constructor-programa-maestro/compare/v1.0.0...v1.1.0) (2026-03-24)
 
 
