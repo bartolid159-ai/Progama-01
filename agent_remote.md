@@ -57,4 +57,3 @@ Prohibido: Usar APIs de bases de datos en la nube (como Supabase o Firebase) a m
 Clean Code: Mantén los archivos pequeños y bien comentados.
 Persistencia: Asegura que la base de datos SQLite realice backups locales automáticos.
 Seguridad Contable: Nunca guardes claves de acceso en el código; utiliza un sistema de gestión de secretos local.
-
