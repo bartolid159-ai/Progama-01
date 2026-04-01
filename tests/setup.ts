@@ -1,4 +1,5 @@
 import { beforeAll, afterAll, beforeEach } from 'vitest';
+import '@testing-library/jest-dom/vitest';
 import { getDb, closeDb } from '../src/db.js';
 
 beforeAll(() => {
