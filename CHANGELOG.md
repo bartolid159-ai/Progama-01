@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.1.0...v1.2.0) (2026-04-01)
+
+
+### Features
+
+* implementación de base de datos sqlite y manager acid (tarea 02) ([c081a78](https://github.com/bartolid159-ai/Progama-01/commit/c081a7807105c7ab5ead05a9ca9c83204ca7c716))
+
 ## [1.1.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.0.0...v1.1.0) (2026-04-01)
 
 
