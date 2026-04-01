@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest';
-import { getDb, closeDb } from '../../src/db.js';
+import { getDb, closeDb } from '../../src/db/manager.js';
 
 describe('SQLite Local Persistence', () => {
   it('should insert a client and verify it persists after reconnection', () => {
