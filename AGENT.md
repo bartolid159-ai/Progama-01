@@ -18,14 +18,14 @@ Seguridad: Encriptación de contraseñas local (bcrypt) y revisión de código p
 Configuración de Electron Builder:
 Configurar el instalador para que sea 100% autónomo, incluyendo los binarios de Node.js y SQLite. El cliente NO debe instalar herramientas de desarrollo externas.
 Activar la opción asar: true para proteger el código fuente de modificaciones accidentales.
-Configurar un Setup Wizard (NSIS) que cree automáticamente un acceso directo en el escritorio y lance la app al finalizar.
+Configurar un Setup Wizard (NSIS) que cree automáticamente un acceso directo en el escritorio y lance la app al finalizar. Realiza un manual de como instalar el programa para que el cliente pueda hacerlo por si mismo, ademas de realizar un manual de como usar el programa.
 Esto lo haras una vez que te diga que el programa esta listo para ser entregado.
 
 4. Flujo de Trabajo Agéntico (SDD - Spec-Driven Development)
 Debes seguir estrictamente este protocolo para evitar errores y "código Frankenstein":
 Fase A: Planificación (Plan Mode)
 Antes de escribir código, activa el Modo Plan (tecla Tab en OpenCode o selector en Antigravity).
-Lee siempre los documentos en .ai/context/ (PRD, Arquitectura, Tareas) para no perder el norte del proyecto.
+Lee siempre los documentos en ai.context/ (PRD, Arquitectura, Tareas) para no perder el norte del proyecto.
 Propón el plan y espera mi aprobación (HITL - Human in the Loop).
 
 Fase B: Ejecución Atómica
@@ -58,3 +58,9 @@ Clean Code: Mantén los archivos pequeños y bien comentados.
 Persistencia: Asegura que la base de datos SQLite realice backups locales automáticos.
 Seguridad Contable: Nunca guardes claves de acceso en el código; utiliza un sistema de gestión de secretos local.
 
+8. Obligatoriedad: Cada vez que implementes una nueva funcionalidad, lógica de negocio o componente, debes crear obligatoriamente su correspondiente suite de pruebas unitarias o de integración utilizando Vitest [806, History].
+Ubicación: Los tests deben guardarse en la carpeta /tests siguiendo la estructura del proyecto (ej: servicios.test.ts para probar servicios.ts)
+.
+Criterio de Aceptación: Una tarea no se considera finalizada hasta que el código haya sido escrito Y el agente haya ejecutado el comando de test localmente (npm test) confirmando que todos los checks están en verde
+.
+Casos de Borde (Edge Cases): Debes incluir tests que validen errores comunes, como campos vacíos, valores negativos en contabilidad o falta de stock en inventario
