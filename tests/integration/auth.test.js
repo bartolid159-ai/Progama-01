@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { login, register } from '../../src/auth.js';
-import { getDb } from '../../src/db.js';
+import { getDb, closeDb } from '../../src/db/manager.js';
 
 describe('Local Authentication System', () => {
   beforeEach(async () => {

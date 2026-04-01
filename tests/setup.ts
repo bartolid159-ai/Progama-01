@@ -1,6 +1,6 @@
 import { beforeAll, afterAll, beforeEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import { getDb, closeDb } from '../src/db.js';
+import { getDb, closeDb } from '../src/db/manager.js';
 
 beforeAll(() => {
   // Ensure we are in test mode

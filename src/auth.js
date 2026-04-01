@@ -1,4 +1,4 @@
-import { getDb } from './db.js';
+import { getDb } from './db/manager.js';
 import bcrypt from 'bcrypt';
 
 export async function login(username, password) {
