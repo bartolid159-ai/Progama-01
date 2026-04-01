@@ -26,7 +26,15 @@ Debes seguir estrictamente este protocolo para evitar errores y "código Franken
 Fase A: Planificación (Plan Mode)
 Antes de escribir código, activa el Modo Plan (tecla Tab en OpenCode o selector en Antigravity).
 Lee siempre los documentos en ai.context/ (PRD, Arquitectura, Tareas) para no perder el norte del proyecto.
-Propón el plan y espera mi aprobación (HITL - Human in the Loop).
+Antes de realizar cualquier cambio físico en el código o ejecutar comandos de instalación, debes generar una propuesta detallada
+.
+Materialización del Plan: Este plan no solo debe describirse en el chat, sino que debe guardarse físicamente en un nuevo archivo en .ai/context/tasks/plan_tarea_XX.md
+.
+Contenido del Plan: El archivo debe incluir: 1) Análisis de impacto en archivos existentes, 2) Nuevos archivos a crear, 3) Lógica de negocio a implementar y 4) Definición de los tests de Vitest necesarios
+.
+DETENCIÓN OBLIGATORIA: Una vez creado el archivo del plan, debes DETENERTE por completo
+. No puedes pasar al modo "Build" o implementar el código hasta que yo te diga Plan aprobado, procede con la implementación
+
 
 Fase B: Ejecución Atómica
 Implementa las funciones de una en una basándote en los archivos de la carpeta tasks/.
