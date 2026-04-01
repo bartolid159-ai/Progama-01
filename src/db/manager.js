@@ -91,3 +91,17 @@ export const getPacienteByCedula = (cedula_rif) => {
   const stmt = db.prepare('SELECT * FROM pacientes WHERE cedula_rif = ?');
   return stmt.get(cedula_rif);
 };
+
+export const searchPatients = (query) => {
+  const db = getDb();
+  if (!query) return getAllPatients();
+  const target = `%${query}%`;
+  const stmt = db.prepare('SELECT * FROM pacientes WHERE nombre LIKE ? OR cedula_rif LIKE ? LIMIT 50');
+  return stmt.all(target, target);
+};
+
+export const getAllPatients = () => {
+  const db = getDb();
+  const stmt = db.prepare('SELECT * FROM pacientes ORDER BY created_at DESC LIMIT 100');
+  return stmt.all();
+};
