@@ -64,5 +64,3 @@ Ubicación: Los tests deben guardarse en la carpeta /tests siguiendo la estructu
 Criterio de Aceptación: Una tarea no se considera finalizada hasta que el código haya sido escrito Y el agente haya ejecutado el comando de test localmente (npm test) confirmando que todos los checks están en verde
 .
 Casos de Borde (Edge Cases): Debes incluir tests que validen errores comunes, como campos vacíos, valores negativos en contabilidad o falta de stock en inventario
-
-
