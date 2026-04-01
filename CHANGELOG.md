@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.0.0...v1.1.0) (2026-04-01)
+
+
+### Features
+
+* agregar protocolo de calidad y tests al Agent.md ([c65124c](https://github.com/bartolid159-ai/Progama-01/commit/c65124c31c4a9d1ab26b5738dd624a017873255c))
+* Tarea 01 - Inicialización del Proyecto Frontend + Tests Unitarios (Garantía de Calidad) ([851e067](https://github.com/bartolid159-ai/Progama-01/commit/851e0676761068aa26b6d5ec552f66d610d805b9))
+* Tarea 01 - Proyecto Base y Garantía de Calidad (React + Vitest) ([56ebccd](https://github.com/bartolid159-ai/Progama-01/commit/56ebccdb644bc4880ade2b3fe63cc4d6008cbddc))
+
 ## 1.1.0 (2026-04-01)
 
 ### Features
