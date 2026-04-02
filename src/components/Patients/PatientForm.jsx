@@ -14,9 +14,9 @@ const PatientForm = ({ onSave, onCancel }) => {
 
   const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = patientService.registerPatient(formData);
+    const result = await patientService.registerPatient(formData);
     if (result.success) {
       onSave(result.message);
     } else {

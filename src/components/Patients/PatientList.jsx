@@ -8,15 +8,18 @@ const PatientList = ({ onAddClick }) => {
 
   useEffect(() => {
     // Initial fetch
-    const initialPatients = patientService.getPatients();
-    setPatients(initialPatients);
-    setLoading(false);
+    const fetchPatients = async () => {
+      const initialPatients = await patientService.getPatients();
+      setPatients(initialPatients);
+      setLoading(false);
+    };
+    fetchPatients();
   }, []);
 
   useEffect(() => {
     // Search with debounce logic
-    const delayDebounceFn = setTimeout(() => {
-      const results = patientService.searchPatients(searchTerm);
+    const delayDebounceFn = setTimeout(async () => {
+      const results = await patientService.searchPatients(searchTerm);
       setPatients(results);
     }, 400);
 
