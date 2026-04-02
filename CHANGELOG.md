@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.2.0...v1.3.0) (2026-04-01)
+
+
+### Features
+
+* implementar modulo de pacientes (Tarea 03) con buscador predictivo y validaciones ([bd15b18](https://github.com/bartolid159-ai/Progama-01/commit/bd15b18eb7fa1014f696c6ee1a3f4cdd35efae16))
+* Módulo de Gestión de Pacientes (Tarea 03) ([ab9721b](https://github.com/bartolid159-ai/Progama-01/commit/ab9721be889634fe03fea9905ffa1fe79c8cb77b))
+
 ## [1.2.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.1.0...v1.2.0) (2026-04-01)
 
 
