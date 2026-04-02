@@ -350,6 +350,9 @@ body {
   padding: 2.5rem;
   max-height: 90vh;
   overflow-y: auto;
+  background-color: var(--bg-secondary); /* Solid background for legibility */
+  border: 1px solid var(--border-color);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .patient-form-grid {

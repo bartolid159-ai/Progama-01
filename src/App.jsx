@@ -7,6 +7,7 @@ function App() {
   const [theme, setTheme] = useState('dark');
   const [activeView, setActiveView] = useState('dashboard');
   const [showPatientForm, setShowPatientForm] = useState(false);
+  const [editingPatient, setEditingPatient] = useState(null);
   const [banner, setBanner] = useState({ message: '', type: 'success' });
 
   // Aplicamos la clase "light-mode" al body cuando el estado cambie
@@ -24,9 +25,19 @@ function App() {
 
   const handleSavePatient = (message) => {
     setShowPatientForm(false);
+    setEditingPatient(null);
     setBanner({ message, type: 'success' });
-    // Recargar vista si fuese necesario (en este caso el PatientList se refresca al montarse de nuevo)
     setActiveView('patients'); 
+  };
+
+  const handleEditPatient = (patient) => {
+    setEditingPatient(patient);
+    setShowPatientForm(true);
+  };
+
+  const handleCancelForm = () => {
+    setShowPatientForm(false);
+    setEditingPatient(null);
   };
 
   const closeBanner = () => setBanner({ ...banner, message: '' });
@@ -78,11 +89,18 @@ function App() {
         )}
 
         {activeView === 'patients' && (
-          <PatientList onAddClick={() => setShowPatientForm(true)} />
+          <PatientList 
+            onAddClick={() => setShowPatientForm(true)} 
+            onEditClick={handleEditPatient} 
+          />
         )}
 
         {showPatientForm && (
-          <PatientForm onSave={handleSavePatient} onCancel={() => setShowPatientForm(false)} />
+          <PatientForm 
+            patient={editingPatient}
+            onSave={handleSavePatient} 
+            onCancel={handleCancelForm} 
+          />
         )}
       </main>
     </div>

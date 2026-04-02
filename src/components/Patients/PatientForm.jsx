@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import * as patientService from '../../logic/patientService.js';
 
-const PatientForm = ({ onSave, onCancel }) => {
-  const [formData, setFormData] = useState({
+const PatientForm = ({ onSave, onCancel, patient = null }) => {
+  const [formData, setFormData] = useState(patient || {
     cedula_rif: '',
     nombre: '',
     sexo: 'F',
