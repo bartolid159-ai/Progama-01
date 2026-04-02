@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/bartolid159-ai/Progama-01/compare/v1.3.0...v1.3.1) (2026-04-02)
+
+
+### Bug Fixes
+
+* corregido el error de tests asíncronos detectado por las Actions ([a838761](https://github.com/bartolid159-ai/Progama-01/commit/a8387612e839423f074e29aedeb05d68f29a56be))
+* **pacientes:** corrección de renderizado y bundle para navegador ([7220424](https://github.com/bartolid159-ai/Progama-01/commit/7220424412e609a7d1099fcdd416df68416bba30))
+
 ## [1.3.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.2.0...v1.3.0) (2026-04-01)
 
 
