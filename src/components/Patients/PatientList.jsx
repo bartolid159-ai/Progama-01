@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as patientService from '../../logic/patientService.js';
 
-const PatientList = ({ onAddClick }) => {
+const PatientList = ({ onAddClick, onEditClick }) => {
   const [patients, setPatients] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -66,7 +66,7 @@ const PatientList = ({ onAddClick }) => {
                   <td>{p.correo || '-'}</td>
                   <td>{p.fecha_nacimiento}</td>
                   <td>{p.sexo}</td>
-                  <td><button className="btn-view" title="Ver detalle">📄</button></td>
+                  <td><button className="btn-view" title="Editar Paciente" onClick={() => onEditClick(p)}>📄</button></td>
                 </tr>
               ))
             )}
