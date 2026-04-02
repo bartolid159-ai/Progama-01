@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/bartolid159-ai/Progama-01/compare/v1.3.1...v1.3.2) (2026-04-02)
+
+
+### Bug Fixes
+
+* mejorar estética del formulario y habilitar acciones de edición ([464a80a](https://github.com/bartolid159-ai/Progama-01/commit/464a80a5bd74e08b6c65ce845329ac78008d9a25))
+
 ## [1.3.1](https://github.com/bartolid159-ai/Progama-01/compare/v1.3.0...v1.3.1) (2026-04-02)
 
 
