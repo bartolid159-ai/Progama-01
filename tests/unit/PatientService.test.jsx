@@ -16,15 +16,15 @@ describe('PatientService Logic', () => {
     vi.clearAllMocks();
   });
 
-  it('should validate required fields correctly', () => {
+  it('should validate required fields correctly', async () => {
     const incompleteData = { nombre: 'Test' };
-    const result = patientService.registerPatient(incompleteData);
+    const result = await patientService.registerPatient(incompleteData);
     
     expect(result.success).toBe(false);
     expect(result.message).toContain('obligatorio');
   });
 
-  it('should reject duplicate cedula_rif', () => {
+  it('should reject duplicate cedula_rif', async () => {
     const validData = {
       cedula_rif: 'V-123',
       nombre: 'Test User',
@@ -35,13 +35,13 @@ describe('PatientService Logic', () => {
     // Simulate existing patient
     dbManager.getPacienteByCedula.mockReturnValue({ id: 1, ...validData });
 
-    const result = patientService.registerPatient(validData);
+    const result = await patientService.registerPatient(validData);
     
     expect(result.success).toBe(false);
     expect(result.message).toContain('ya se encuentra registrada');
   });
 
-  it('should register a new patient successfully when data is valid and unique', () => {
+  it('should register a new patient successfully when data is valid and unique', async () => {
     const validData = {
       cedula_rif: 'V-456',
       nombre: 'New User',
@@ -52,7 +52,7 @@ describe('PatientService Logic', () => {
     dbManager.getPacienteByCedula.mockReturnValue(null);
     dbManager.insertPaciente.mockReturnValue({ lastInsertRowid: 10 });
 
-    const result = patientService.registerPatient(validData);
+    const result = await patientService.registerPatient(validData);
     
     expect(result.success).toBe(true);
     expect(result.message).toContain('exitosamente');

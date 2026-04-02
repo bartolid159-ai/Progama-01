@@ -1,24 +1,30 @@
-import * as dbManager from '../db/manager.js';
+// Import type:module requires dynamic imports to avoid bundling Node modules in browser
+let dbManager = null;
 
-/**
- * Patient Service - Logic layer for Patient management.
- * Handles validation and interacts with the database manager.
- */
-
-// Simple check to see if we are in a browser environment to avoid crashing on better-sqlite3 imports
-// We allow the direct DB access in test mode to facilitate unit testing
+// Determine environment
 const isBrowser = typeof window !== 'undefined' && 
                   typeof window.document !== 'undefined' && 
                   process.env.NODE_ENV !== 'test';
 
 /**
- * Adds a new patient after validation.
- * @param {Object} patientData - { cedula_rif, nombre, sexo, fecha_nacimiento, telefono, correo, direccion }
- * @returns {Object} { success: boolean, message: string, data?: any }
+ * Helper to get the database manager dynamically only in native/test environment.
  */
-export const registerPatient = (patientData) => {
+const getDbManager = async () => {
+  if (isBrowser) return null;
+  if (!dbManager) {
+    // We use a variable path and @vite-ignore to prevent Vite from bundling 
+    // Node-specific modules (better-sqlite3) during web dev/build.
+    const dbPath = '../db/manager.js';
+    dbManager = await import(/* @vite-ignore */ dbPath);
+  }
+  return dbManager;
+};
+
+/**
+ * Adds a new patient after validation.
+ */
+export const registerPatient = async (patientData) => {
   try {
-    // 1. Basic Validation
     const requiredFields = ['cedula_rif', 'nombre', 'sexo', 'fecha_nacimiento'];
     for (const field of requiredFields) {
       if (!patientData[field]) {
@@ -31,14 +37,13 @@ export const registerPatient = (patientData) => {
       return { success: true, message: "Paciente registrado (Simulación browser)." };
     }
 
-    // 2. Check for duplicates
-    const existing = dbManager.getPacienteByCedula(patientData.cedula_rif);
+    const db = await getDbManager();
+    const existing = db.getPacienteByCedula(patientData.cedula_rif);
     if (existing) {
       return { success: false, message: "La cédula o RIF ya se encuentra registrada." };
     }
 
-    // 3. Insert
-    const result = dbManager.insertPaciente(patientData);
+    const result = db.insertPaciente(patientData);
     return { success: true, message: "Paciente guardado exitosamente.", id: result.lastInsertRowid };
   } catch (error) {
     console.error("Error in registerPatient:", error);
@@ -48,23 +53,34 @@ export const registerPatient = (patientData) => {
 
 /**
  * Searches for patients by name or ID.
- * @param {string} query 
- * @returns {Array} List of patients
  */
-export const searchPatients = (query) => {
+export const searchPatients = async (query) => {
   if (isBrowser) {
-    return []; // Return empty or mock data in browser
+    // Return mock data for UI testing in browser
+    const mocks = [
+      { id: 1, nombre: 'Juan Pérez (Mock)', cedula_rif: 'V-123456', telefono: '0412-1111111', correo: 'juan@test.com', fecha_nacimiento: '1985-10-10', sexo: 'M' },
+      { id: 2, nombre: 'María García (Mock)', cedula_rif: 'V-654321', telefono: '0424-2222222', correo: 'maria@test.com', fecha_nacimiento: '1992-05-15', sexo: 'F' }
+    ];
+    if (!query) return mocks;
+    return mocks.filter(p => 
+      p.nombre.toLowerCase().includes(query.toLowerCase()) || 
+      p.cedula_rif.includes(query)
+    );
   }
-  return dbManager.searchPatients(query);
+  const db = await getDbManager();
+  return db.searchPatients(query);
 };
 
 /**
- * Gets all patients (limited).
- * @returns {Array} List of patients
+ * Gets all patients.
  */
-export const getPatients = () => {
+export const getPatients = async () => {
   if (isBrowser) {
-    return [];
+    return [
+      { id: 1, nombre: 'Juan Pérez (Mock)', cedula_rif: 'V-123456', telefono: '0412-1111111', correo: 'juan@test.com', fecha_nacimiento: '1985-10-10', sexo: 'M' },
+      { id: 2, nombre: 'María García (Mock)', cedula_rif: 'V-654321', telefono: '0424-2222222', correo: 'maria@test.com', fecha_nacimiento: '1992-05-15', sexo: 'F' }
+    ];
   }
-  return dbManager.getAllPatients();
+  const db = await getDbManager();
+  return db.getAllPatients();
 };
