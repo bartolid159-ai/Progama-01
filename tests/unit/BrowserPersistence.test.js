@@ -8,6 +8,7 @@ describe('Browser Persistence (localStorage)', () => {
     localStorage.clear();
     // Ensure we are in browser mode for these tests
     vi.stubGlobal('window', { document: {} });
+    doctorService.setBrowserMode(true);
   });
 
   it('should initialize and persist doctors in localStorage', async () => {

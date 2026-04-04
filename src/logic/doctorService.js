@@ -2,8 +2,11 @@
 let dbManager = null;
 
 // Determine environment
-const isBrowser = typeof window !== 'undefined' && 
-                  typeof window.document !== 'undefined';
+let isBrowser = typeof window !== 'undefined' && 
+                  typeof window.document !== 'undefined' && 
+                  process.env.NODE_ENV !== 'test';
+
+export const setBrowserMode = (mode) => { isBrowser = mode; };
 
 /**
  * Helper to get the database manager dynamically only in native/test environment.
