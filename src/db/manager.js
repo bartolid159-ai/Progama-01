@@ -105,3 +105,55 @@ export const getAllPatients = () => {
   const stmt = db.prepare('SELECT * FROM pacientes ORDER BY created_at DESC LIMIT 100');
   return stmt.all();
 };
+
+/**
+ * Basic CRUD helpers for 'medicos'.
+ */
+export const insertMedico = (data) => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    INSERT INTO medicos (nombre, cedula_rif, telefono, correo, especialidad, porcentaje_comision, activo)
+    VALUES (@nombre, @cedula_rif, @telefono, @correo, @especialidad, @porcentaje_comision, 1)
+  `);
+  return stmt.run(data);
+};
+
+export const updateMedico = (data) => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    UPDATE medicos 
+    SET nombre = @nombre, 
+        cedula_rif = @cedula_rif, 
+        telefono = @telefono, 
+        correo = @correo, 
+        especialidad = @especialidad, 
+        porcentaje_comision = @porcentaje_comision
+    WHERE id = @id
+  `);
+  return stmt.run(data);
+};
+
+export const deactivateMedico = (id) => {
+  const db = getDb();
+  const stmt = db.prepare('UPDATE medicos SET activo = 0 WHERE id = ?');
+  return stmt.run(id);
+};
+
+export const searchMedicos = (query) => {
+  const db = getDb();
+  if (!query) return getAllMedicos();
+  const target = `%${query}%`;
+  const stmt = db.prepare(`
+    SELECT * FROM medicos 
+    WHERE activo = 1 
+    AND (nombre LIKE ? OR cedula_rif LIKE ? OR especialidad LIKE ?) 
+    LIMIT 50
+  `);
+  return stmt.all(target, target, target);
+};
+
+export const getAllMedicos = () => {
+  const db = getDb();
+  const stmt = db.prepare('SELECT * FROM medicos WHERE activo = 1 ORDER BY nombre ASC LIMIT 100');
+  return stmt.all();
+};
