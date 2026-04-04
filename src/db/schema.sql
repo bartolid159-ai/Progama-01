@@ -22,10 +22,14 @@ CREATE TABLE IF NOT EXISTS pacientes (
 -- Tabla de Médicos
 CREATE TABLE IF NOT EXISTS medicos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre TEXT,
+  nombre TEXT_NOT_NULL,
+  cedula_rif TEXT,
+  telefono TEXT,
+  correo TEXT,
   especialidad TEXT,
   porcentaje_comision REAL,
-  activo BOOLEAN DEFAULT 1
+  activo BOOLEAN DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Inventario de Insumos

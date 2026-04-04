@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react';
 import PatientList from './components/Patients/PatientList';
 import PatientForm from './components/Patients/PatientForm';
+import DoctorList from './components/Doctors/DoctorList';
+import DoctorForm from './components/Doctors/DoctorForm';
 import Banner from './components/Common/Banner';
 
 function App() {
   const [theme, setTheme] = useState('dark');
   const [activeView, setActiveView] = useState('dashboard');
+  
+  // Patient states
   const [showPatientForm, setShowPatientForm] = useState(false);
   const [editingPatient, setEditingPatient] = useState(null);
+  
+  // Doctor states
+  const [showDoctorForm, setShowDoctorForm] = useState(false);
+  const [editingDoctor, setEditingDoctor] = useState(null);
+  
   const [banner, setBanner] = useState({ message: '', type: 'success' });
 
   // Aplicamos la clase "light-mode" al body cuando el estado cambie
@@ -23,6 +32,7 @@ function App() {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
+  // Patient handlers
   const handleSavePatient = (message) => {
     setShowPatientForm(false);
     setEditingPatient(null);
@@ -35,12 +45,36 @@ function App() {
     setShowPatientForm(true);
   };
 
+  // Doctor handlers
+  const handleSaveDoctor = (message) => {
+    setShowDoctorForm(false);
+    setEditingDoctor(null);
+    setBanner({ message, type: 'success' });
+    setActiveView('doctors');
+  };
+
+  const handleEditDoctor = (doctor) => {
+    setEditingDoctor(doctor);
+    setShowDoctorForm(true);
+  };
+
   const handleCancelForm = () => {
     setShowPatientForm(false);
     setEditingPatient(null);
+    setShowDoctorForm(false);
+    setEditingDoctor(null);
   };
 
   const closeBanner = () => setBanner({ ...banner, message: '' });
+
+  const getPageTitle = () => {
+    switch (activeView) {
+      case 'dashboard': return 'Dashboard';
+      case 'patients': return 'Gestión de Pacientes';
+      case 'doctors': return 'Gestión de Médicos';
+      default: return 'Sistema de Gestión';
+    }
+  };
 
   return (
     <div className="layout-container">
@@ -51,6 +85,7 @@ function App() {
         <ul className="nav-links">
           <li className={activeView === 'dashboard' ? 'active' : ''} onClick={() => setActiveView('dashboard')}>Dashboard</li>
           <li className={activeView === 'patients' ? 'active' : ''} onClick={() => setActiveView('patients')}>Pacientes</li>
+          <li className={activeView === 'doctors' ? 'active' : ''} onClick={() => setActiveView('doctors')}>Médicos</li>
           <li>Facturación</li>
           <li>Inventario</li>
           <li>Liquidación</li>
@@ -59,7 +94,7 @@ function App() {
       
       <main className="main-content">
         <header className="topbar">
-          <h2>{activeView === 'dashboard' ? 'Dashboard' : 'Gestión de Pacientes'}</h2>
+          <h2>{getPageTitle()}</h2>
           <div className="user-profile">
             <button className="theme-toggle" onClick={toggleTheme}>
               {theme === 'light' ? '🌙 Modo Oscuro' : '☀️ Modo Claro'}
@@ -95,10 +130,25 @@ function App() {
           />
         )}
 
+        {activeView === 'doctors' && (
+          <DoctorList 
+            onAddClick={() => setShowDoctorForm(true)} 
+            onEditClick={handleEditDoctor} 
+          />
+        )}
+
         {showPatientForm && (
           <PatientForm 
             patient={editingPatient}
             onSave={handleSavePatient} 
+            onCancel={handleCancelForm} 
+          />
+        )}
+
+        {showDoctorForm && (
+          <DoctorForm 
+            doctor={editingDoctor}
+            onSave={handleSaveDoctor} 
             onCancel={handleCancelForm} 
           />
         )}
