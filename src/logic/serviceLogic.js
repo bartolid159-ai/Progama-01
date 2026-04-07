@@ -171,6 +171,19 @@ export const getInsumos = async () => {
 };
 
 /**
+ * Get insumos by service ID.
+ */
+export const getInsumosByServicio = async (id_servicio) => {
+    if (isBrowser) {
+        const services = getBrowserServices();
+        const service = services.find(s => s.id === Number(id_servicio));
+        return service?.insumos || [];
+    }
+    const db = await getDbManager();
+    return db.getInsumosByServicio(id_servicio);
+};
+
+/**
  * Register a new insumo.
  */
 export const registerInsumo = async (insumoData) => {

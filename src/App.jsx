@@ -5,6 +5,8 @@ import DoctorList from './components/Doctors/DoctorList';
 import DoctorForm from './components/Doctors/DoctorForm';
 import ServiceList from './components/Services/ServiceList';
 import ServiceForm from './components/Services/ServiceForm';
+import InvoiceForm from './components/Billing/InvoiceForm';
+import InvoiceHistory from './components/Billing/InvoiceHistory';
 import Banner from './components/Common/Banner';
 
 function App() {
@@ -23,6 +25,10 @@ function App() {
   const [showServiceForm, setShowServiceForm] = useState(false);
   const [editingService, setEditingService] = useState(null);
   
+  // Billing states
+  const [billingSubView, setBillingSubView] = useState('form');
+  const [lastInvoiceKey, setLastInvoiceKey] = useState(0);
+
   const [banner, setBanner] = useState({ message: '', type: 'success' });
 
   // Aplicamos la clase "light-mode" al body cuando el estado cambie
@@ -94,6 +100,7 @@ function App() {
       case 'patients': return 'Gestión de Pacientes';
       case 'doctors': return 'Gestión de Médicos';
       case 'services': return 'Gestión de Servicios';
+      case 'billing': return 'Facturación';
       default: return 'Sistema de Gestión';
     }
   };
@@ -109,7 +116,7 @@ function App() {
           <li className={activeView === 'patients' ? 'active' : ''} onClick={() => setActiveView('patients')}>Pacientes</li>
           <li className={activeView === 'doctors' ? 'active' : ''} onClick={() => setActiveView('doctors')}>Médicos</li>
           <li className={activeView === 'services' ? 'active' : ''} onClick={() => setActiveView('services')}>Servicios</li>
-          <li>Facturación</li>
+          <li className={activeView === 'billing' ? 'active' : ''} onClick={() => { setActiveView('billing'); setBillingSubView('form'); }}>Facturación</li>
           <li>Inventario</li>
           <li>Liquidación</li>
         </ul>
@@ -117,7 +124,29 @@ function App() {
       
       <main className="main-content">
         <header className="topbar">
-          <h2>{getPageTitle()}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <h2>{getPageTitle()}</h2>
+            {activeView === 'billing' && (
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  className={billingSubView === 'form' ? 'btn-primary' : 'btn-secondary'}
+                  style={{ fontSize: '0.85rem', padding: '6px 14px' }}
+                  onClick={() => setBillingSubView('form')}
+                  id="billing-new-invoice-btn"
+                >
+                  ➕ Nueva Factura
+                </button>
+                <button
+                  className={billingSubView === 'history' ? 'btn-primary' : 'btn-secondary'}
+                  style={{ fontSize: '0.85rem', padding: '6px 14px' }}
+                  onClick={() => setBillingSubView('history')}
+                  id="billing-history-btn"
+                >
+                  📋 Historial
+                </button>
+              </div>
+            )}
+          </div>
           <div className="user-profile">
             <button className="theme-toggle" onClick={toggleTheme}>
               {theme === 'light' ? '🌙 Modo Oscuro' : '☀️ Modo Claro'}
@@ -167,6 +196,22 @@ function App() {
             onAddClick={() => setShowServiceForm(true)} 
             onEditClick={handleEditService} 
           />
+        )}
+
+
+
+        {activeView === 'billing' && billingSubView === 'form' && (
+          <InvoiceForm
+            key={lastInvoiceKey}
+            onProcessComplete={() => {
+              setLastInvoiceKey(k => k + 1);
+              setBanner({ message: 'Factura procesada y guardada exitosamente.', type: 'success' });
+            }}
+          />
+        )}
+
+        {activeView === 'billing' && billingSubView === 'history' && (
+          <InvoiceHistory />
         )}
 
         {showPatientForm && (

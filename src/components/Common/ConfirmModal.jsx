@@ -8,7 +8,8 @@ const ConfirmModal = ({
   onCancel, 
   confirmText = 'Confirmar', 
   cancelText = 'Cancelar',
-  type = 'danger' // 'danger', 'info', 'warning'
+  type = 'danger', // 'danger', 'info', 'warning'
+  showCancel = true
 }) => {
   if (!isOpen) return null;
 
@@ -25,12 +26,15 @@ const ConfirmModal = ({
           <p>{message}</p>
         </div>
         <div className="modal-footer">
-          <button className="btn-secondary" onClick={onCancel}>
-            {cancelText}
-          </button>
+          {showCancel && (
+            <button className="btn-secondary" onClick={onCancel}>
+              {cancelText}
+            </button>
+          )}
           <button 
             className={`btn-primary ${type === 'danger' ? 'btn-danger-gradient' : ''}`} 
             onClick={onConfirm}
+            style={!showCancel ? { width: '100%' } : {}}
           >
             {confirmText}
           </button>

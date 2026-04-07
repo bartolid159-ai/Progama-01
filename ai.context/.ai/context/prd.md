@@ -29,21 +29,30 @@ Un sistema ERP local-first diseñado para la gestión administrativa eficiente d
     1. **Médico Asociado:** El profesional que ofrece el servicio por defecto.
     2. **Insumos Asociados (Receta):** Lista de materiales del inventario que se descuentan automáticamente (opcional).
 
-### 4.4 Insumos e Inventario
-- Control de existencias (Stock).
-- Alerta visual de stock crítico en el Dashboard.
+### 4.4 Gestión de Insumos (Catálogo y Categorías)
+- **Registro Detallado:** Código/SKU, Nombre, Descripción, Categoría, Stock Actual, Stock Mínimo y Costo Unitario.
+- **Cálculo Automático de Valor:** El sistema debe mostrar el "Costo Total" por ítem (Stock Actual * Costo Unitario).
+- **Categorización:** Capacidad de agrupar insumos (ej. Material Médico, Medicamentos, Limpieza) para filtrado rápido.
+- **Alertas:** Widget visual en Dashboard para niveles de stock por debajo del mínimo configurado.
 
-### 4.5 Facturación y Cobros
+### 4.5 Registro de Compras (Abastecimiento)
+- **Módulo de Entrada:** Interfaz para registrar la llegada de nuevos insumos.
+- **Flujo:** Selección de Insumo + Cantidad Recibida + Costo Unitario Actualizado.
+- **Impacto:** Actualiza automáticamente el `stock_actual` y el `costo_unitario` en el catálogo principal.
+- **Historial:** Bitácora simple de compras por fecha y proveedor.
+
+### 4.6 Facturación y Cobros
 - Selección rápida de Paciente, Servicio y Médico tratante.
 - **Buscadores Predictivos:** Todas las barras de búsqueda (Clientes, Servicios, Médicos) deben filtrar resultados en tiempo real mientras el usuario escribe.
 - Manejo de impuestos: Exento por defecto, 16% IVA seleccionable para venta de insumos sueltos.
 - **Conversión en Tiempo Real:** Total en USD, pago aceptado en VES según tasa del día.
 
-### 4.6 Módulo de Liquidación de Médicos
+### 4.7 Módulo de Liquidación de Médicos
+
 - Resumen diario/semanal de facturación segmentado por médico.
 - Cálculo automático de "Por pagar" basado en el porcentaje acordado sobre la factura bruta.
 
-### 4.7 Contabilidad y Reportes Avanzados
+### 4.8 Contabilidad y Reportes Avanzados
 - Dashboard con **Ganancia Neta del Día** (Ventas - Costo Insumos - Comisiones).
 - **Segmentación de Datos:** Capacidad de visualizar y filtrar Ingresos y Egresos por:
     - **Servicio:** Cuáles generan más rentabilidad.
@@ -55,7 +64,7 @@ Un sistema ERP local-first diseñado para la gestión administrativa eficiente d
 ## 5. Lógica de Interconexión (Core Engine)
 Al procesar una factura:
 1. **Inventario:** Se descuentan automáticamente los insumos asociados al servicio prestado.
-2. **Contabilidad (Costo):** Se registra el costo de los insumos (método FIFO/Promedio) como un egreso de inventario.
+2. **Contabilidad (Costo):** Se registra el costo de los insumos (basado en el último costo unitario registrado) como un egreso de inventario.
 3. **Contabilidad (Comisiones):** Se genera un pasivo (cuenta por pagar) al médico basado en su porcentaje.
 4. **Cierre de Caja:** El cajero declara el efectivo/transferencia recibido. El sistema compara contra el teórico y reporta faltantes/sobrantes al Administrador.
 
