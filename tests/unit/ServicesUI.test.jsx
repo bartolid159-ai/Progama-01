@@ -43,9 +43,6 @@ describe('Services UI - Functional Button Tests', () => {
     ]);
     serviceLogic.deleteService.mockResolvedValue({ success: true });
     
-    // Mock confirmation
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
-
     render(<ServiceList onAddClick={() => {}} onEditClick={() => {}} />);
 
     await waitFor(() => screen.getByText('Eliminar Me'));
@@ -53,7 +50,10 @@ describe('Services UI - Functional Button Tests', () => {
     const deleteBtn = screen.getByTitle('Eliminar');
     fireEvent.click(deleteBtn);
 
-    expect(window.confirm).toHaveBeenCalled();
+    // Esperar a que el modal de confirmación aparezca y confirmar
+    const confirmBtn = await screen.findByText('Confirmar');
+    fireEvent.click(confirmBtn);
+
     expect(serviceLogic.deleteService).toHaveBeenCalledWith(1);
   });
 

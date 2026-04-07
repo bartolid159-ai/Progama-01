@@ -1,3 +1,4 @@
+/** @vitest-environment node */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { login, register } from '../../src/auth.js';
 import { getDb, closeDb } from '../../src/db/manager.js';

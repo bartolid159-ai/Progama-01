@@ -1,3 +1,4 @@
+/** @vitest-environment node */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { getDb, insertMedico, updateMedico, deactivateMedico, getAllMedicos } from '../../src/db/manager.js';
 import fs from 'fs';
