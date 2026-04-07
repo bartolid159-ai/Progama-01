@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.4.0...v1.5.0) (2026-04-07)
+
+
+### Features
+
+* **billing:** implementar modulo de facturacion completo (Tarea 06.1) ([ead4554](https://github.com/bartolid159-ai/Progama-01/commit/ead455433e300bfe12d1b88e2bc561975ebd20d3))
+* **billing:** implementar persistencia, historial y validaciones modales en facturacion ([b9af7eb](https://github.com/bartolid159-ai/Progama-01/commit/b9af7ebedec7763151165bebba6cabd41b55b06a))
+
+
+### Bug Fixes
+
+* **billing:** stablilize CI and fix service logic environment consistency ([491393b](https://github.com/bartolid159-ai/Progama-01/commit/491393b61c0eea84351e2bab57a262a9e32eccb4))
+
 ## [1.4.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.3.2...v1.4.0) (2026-04-07)
 
 
