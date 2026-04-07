@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+/** @vitest-environment node */
+import { describe, it, expect, beforeEach, afterAll, vi } from 'vitest';
 import { getDb, closeDb, processInvoice, getFacturaById, getFacturaDetalles } from '../../src/db/manager.js';
 import { insertPaciente, insertMedico, insertServicio, insertInsumo, setServicioInsumos } from '../../src/db/manager.js';
 

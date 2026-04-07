@@ -69,17 +69,15 @@ describe('InvoiceForm', () => {
     fireEvent.click(processBtn);
     
     await waitFor(() => {
-      expect(screen.getByText(/debe seleccionar un paciente/i)).toBeDefined();
+      expect(screen.getByText(/Por favor seleccione un paciente para continuar/i)).toBeDefined();
     });
   });
 
   it('debe permitir agregar servicios a la factura', async () => {
     render(<InvoiceForm />);
     
-    await waitFor(() => {
-      const select = screen.getByRole('combobox');
-      fireEvent.change(select, { target: { value: '1' } });
-    });
+    const select = await screen.findByDisplayValue(/Seleccione un servicio.../i);
+    fireEvent.change(select, { target: { value: '1' } });
     
     await waitFor(() => {
       expect(screen.getByText('Consulta General')).toBeDefined();

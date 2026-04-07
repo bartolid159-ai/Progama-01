@@ -1,4 +1,5 @@
-import { describe, it, expect, afterEach } from 'vitest';
+/** @vitest-environment node */
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { getDb, closeDb } from '../../src/db/manager.js';
 
 describe('SQLite Local Persistence', () => {

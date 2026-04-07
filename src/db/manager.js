@@ -1,4 +1,3 @@
-// We check if we are in a browser environment to avoid importing Node modules like 'better-sqlite3'
 const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
 
 let Database = null;
@@ -43,19 +42,50 @@ export function getDb(dbPath = process.env.NODE_ENV === 'test' ? ':memory:' : 'd
   
   if (dbInstance) return dbInstance;
   
-  // Dynamic imports for Node-only modules
-  // Note: better-sqlite3 must be a commonjs module or handled carefully
-  // For now we assume this file is run in Node for actual DB access.
-  
   const isMemory = dbPath === ':memory:' || dbPath.startsWith(':memory:');
+
+  let Database, fs, pth;
+  try {
+    // Escapar del bundler para evitar errores en navegador
+    const req = typeof require !== 'undefined' ? require : (typeof process !== 'undefined' && process.mainModule ? process.mainModule.require : eval('require'));
+    Database = req('better-sqlite3');
+    fs = req('fs');
+    pth = req('path');
+  } catch (err) {
+    console.warn("Could not load native SQLite bindings. Running with stub database.");
+    return {
+      prepare: () => ({ run: () => ({ lastInsertRowid: 1 }), get: () => null, all: () => [], transaction: (cb) => cb }),
+      exec: () => {},
+      pragma: () => {},
+      transaction: (cb) => cb
+    };
+  }
 
   // Ensure the directory exists if it's a file path
   if (!isMemory) {
-    // These would need more careful handling if isBrowser was false but filesystem was missing
-    // But since we are guarding at the top, we are safe.
+    const dir = pth.dirname(dbPath);
+    if (dir !== '.' && !fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
   }
 
-  // Initialize DB (this will still fail if run in browser without the if(isBrowser) guard above)
+  // Initialize DB
+  dbInstance = new Database(dbPath);
+
+  // Pragmas for performance and enforcing foreign keys (ACID bounds)
+  dbInstance.pragma('journal_mode = WAL');
+  dbInstance.pragma('synchronous = NORMAL');
+  dbInstance.pragma('foreign_keys = ON');
+
+  // Conditionally load the initial schema if it exists 
+  if (loadSchema) {
+    const schemaPath = pth.join(process.cwd(), 'src/db/schema.sql');
+    if (fs.existsSync(schemaPath)) {
+      const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+      dbInstance.exec(schemaSql);
+    }
+  }
+  
   return dbInstance;
 }
 

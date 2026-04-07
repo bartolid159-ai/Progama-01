@@ -1,72 +1,44 @@
-// Import type:module requires dynamic imports to avoid bundling Node modules in browser
-let dbManager = null;
+import * as dbManager from '../db/manager.js';
 
 // Determine environment
-let isBrowser = typeof window !== 'undefined' && 
-                  typeof window.document !== 'undefined' && 
-                  process.env.NODE_ENV !== 'test';
+let isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
 
 export const setBrowserMode = (mode) => { isBrowser = mode; };
 
 /**
- * Helper to get the database manager dynamically only in native/test environment.
+ * Helper to get the database manager.
  */
-const getDbManager = async () => {
+const getDbManager = () => {
   if (isBrowser) return null;
-  if (!dbManager) {
-    const dbPath = '../db/manager.js';
-    dbManager = await import(/* @vite-ignore */ dbPath);
-  }
   return dbManager;
 };
 
-// Browser persistence helpers
-const SERVICES_KEY = 'clinica_services_db';
-const INSUMOS_KEY = 'clinica_insumos_db';
+/**
+ * Local storage keys
+ */
+const SERVICES_KEY = 'clinica_servicios';
+const INSUMOS_KEY = 'clinica_insumos';
 
-const getBrowserInsumos = () => {
-    const data = localStorage.getItem(INSUMOS_KEY);
-    if (!data) {
-        const initial = [
-            { id: 1, nombre: 'Guantes de Látex', unidad_medida: 'Par', stock_actual: 200, costo_unitario_usd: 0.50 },
-            { id: 2, nombre: 'Jeringa 5ml', unidad_medida: 'Unidad', stock_actual: 150, costo_unitario_usd: 0.30 },
-            { id: 3, nombre: 'Alcohol 70%', unidad_medida: 'ml', stock_actual: 5000, costo_unitario_usd: 0.02 }
-        ];
-        localStorage.setItem(INSUMOS_KEY, JSON.stringify(initial));
-        return initial;
-    }
-    return JSON.parse(data).map(i => ({ ...i, id: Number(i.id) }));
-};
-
-const getBrowserServices = () => {
-    const data = localStorage.getItem(SERVICES_KEY);
-    if (!data) {
-        const initial = [
-            { id: 1, nombre: 'Consulta General', precio_usd: 30, es_exento: true, id_medico_defecto: 1, medico_nombre: 'Dr. Gregory House', insumos: [{ id_insumo: 1, cantidad: 2 }] },
-            { id: 2, nombre: 'Electrocardiograma', precio_usd: 50, es_exento: false, id_medico_defecto: 2, medico_nombre: 'Dra. Allison Cameron', insumos: [{ id_insumo: 1, cantidad: 1 }, { id_insumo: 2, cantidad: 3 }] }
-        ];
-        localStorage.setItem(SERVICES_KEY, JSON.stringify(initial));
-        return initial;
-    }
-    return JSON.parse(data).map(s => ({ ...s, id: Number(s.id) }));
-};
-
-const saveBrowserServices = (services) => {
-    localStorage.setItem(SERVICES_KEY, JSON.stringify(services));
-};
-
-const saveBrowserInsumos = (insumos) => {
-    localStorage.setItem(INSUMOS_KEY, JSON.stringify(insumos));
-};
+// Browser fallback logic
+const getBrowserServices = () => JSON.parse(localStorage.getItem(SERVICES_KEY) || '[]');
+const saveBrowserServices = (services) => localStorage.setItem(SERVICES_KEY, JSON.stringify(services));
+const getBrowserInsumos = () => JSON.parse(localStorage.getItem(INSUMOS_KEY) || '[]');
+const saveBrowserInsumos = (insumos) => localStorage.setItem(INSUMOS_KEY, JSON.stringify(insumos));
 
 /**
  * Register a new service.
  */
-export const registerService = async (serviceData, insumos = []) => {
+export const registerService = async (serviceData) => {
     try {
-        if (!serviceData.nombre || !serviceData.precio_usd) {
+        // Validation
+        if (!serviceData.nombre || serviceData.precio_usd === undefined || serviceData.precio_usd === null) {
             return { success: false, message: "Nombre y precio son obligatorios." };
         }
+        if (serviceData.precio_usd < 0) {
+            return { success: false, message: "El precio no puede ser negativo." };
+        }
+
+        const insumos = serviceData.insumos || [];
 
         if (isBrowser) {
             const services = getBrowserServices();
@@ -80,7 +52,7 @@ export const registerService = async (serviceData, insumos = []) => {
             return { success: true, message: "Servicio registrado exitosamente (Navegador)." };
         }
 
-        const db = await getDbManager();
+        const db = getDbManager();
         const result = db.insertServicio(serviceData);
         const serviceId = result.lastInsertRowid;
         
@@ -98,9 +70,19 @@ export const registerService = async (serviceData, insumos = []) => {
 /**
  * Update an existing service.
  */
-export const updateService = async (serviceData, insumos = []) => {
+export const updateService = async (serviceData) => {
     try {
         if (!serviceData.id) return { success: false, message: "ID obligatorio." };
+        
+        // Validation
+        if (!serviceData.nombre || serviceData.precio_usd === undefined) {
+             return { success: false, message: "Nombre y precio son obligatorios." };
+        }
+        if (serviceData.precio_usd < 0) {
+            return { success: false, message: "El precio no puede ser negativo." };
+        }
+
+        const insumos = serviceData.insumos || [];
 
         if (isBrowser) {
             const services = getBrowserServices();
@@ -117,7 +99,7 @@ export const updateService = async (serviceData, insumos = []) => {
             return { success: false, message: "Servicio no encontrado." };
         }
 
-        const db = await getDbManager();
+        const db = getDbManager();
         db.updateServicio(serviceData);
         db.setServicioInsumos(serviceData.id, insumos);
         return { success: true, message: "Servicio actualizado exitosamente." };
@@ -136,14 +118,12 @@ export const deleteService = async (id) => {
         if (isNaN(numericId)) return { success: false, message: "ID de servicio inválido." };
 
         if (isBrowser) {
-            const services = getBrowserServices();
-            const filtered = services.filter(s => Number(s.id) !== numericId);
-            saveBrowserServices(filtered);
-            console.log(`Servicio ${numericId} eliminado de local.`);
+            const services = getBrowserServices().filter(s => s.id !== numericId);
+            saveBrowserServices(services);
             return { success: true, message: "Servicio eliminado exitosamente (Navegador)." };
         }
 
-        const db = await getDbManager();
+        const db = getDbManager();
         db.deleteServicio(numericId);
         return { success: true, message: "Servicio eliminado exitosamente." };
     } catch (error) {
@@ -157,16 +137,22 @@ export const deleteService = async (id) => {
  */
 export const getServices = async () => {
     if (isBrowser) return getBrowserServices();
-    const db = await getDbManager();
-    return db.getAllServicios();
+    const db = getDbManager();
+    const services = db.getAllServicios();
+    
+    // Aggregate insumos for each service
+    return services.map(service => ({
+        ...service,
+        insumos: db.getInsumosByServicio(service.id)
+    }));
 };
 
 /**
- * Get all insumos.
+ * Get all available insumos.
  */
 export const getInsumos = async () => {
     if (isBrowser) return getBrowserInsumos();
-    const db = await getDbManager();
+    const db = getDbManager();
     return db.getAllInsumos();
 };
 
@@ -179,7 +165,7 @@ export const getInsumosByServicio = async (id_servicio) => {
         const service = services.find(s => s.id === Number(id_servicio));
         return service?.insumos || [];
     }
-    const db = await getDbManager();
+    const db = getDbManager();
     return db.getInsumosByServicio(id_servicio);
 };
 
@@ -189,11 +175,12 @@ export const getInsumosByServicio = async (id_servicio) => {
 export const registerInsumo = async (insumoData) => {
     if (isBrowser) {
         const insumos = getBrowserInsumos();
-        insumos.push({ ...insumoData, id: Date.now() });
+        insumoData.id = Date.now();
+        insumos.push(insumoData);
         saveBrowserInsumos(insumos);
         return { success: true, message: "Insumo registrado (Navegador)." };
     }
-    const db = await getDbManager();
+    const db = getDbManager();
     const result = db.insertInsumo(insumoData);
     return { success: true, message: "Insumo registrado.", id: result.lastInsertRowid };
 };
