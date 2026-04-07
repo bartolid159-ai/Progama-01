@@ -157,3 +157,128 @@ export const getAllMedicos = () => {
   const stmt = db.prepare('SELECT * FROM medicos WHERE activo = 1 ORDER BY nombre ASC LIMIT 100');
   return stmt.all();
 };
+
+/**
+ * CRUD helpers for 'insumos'.
+ */
+export const insertInsumo = (data) => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    INSERT INTO insumos (nombre, stock_actual, stock_minimo, unidad_medida, costo_unitario_usd)
+    VALUES (@nombre, @stock_actual, @stock_minimo, @unidad_medida, @costo_unitario_usd)
+  `);
+  return stmt.run(data);
+};
+
+export const getAllInsumos = () => {
+  const db = getDb();
+  const stmt = db.prepare('SELECT * FROM insumos ORDER BY nombre ASC LIMIT 100');
+  return stmt.all();
+};
+
+export const getInsumoById = (id) => {
+  const db = getDb();
+  const stmt = db.prepare('SELECT * FROM insumos WHERE id = ?');
+  return stmt.get(id);
+};
+
+export const updateInsumo = (data) => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    UPDATE insumos 
+    SET nombre = @nombre, 
+        stock_actual = @stock_actual, 
+        stock_minimo = @stock_minimo, 
+        unidad_medida = @unidad_medida, 
+        costo_unitario_usd = @costo_unitario_usd
+    WHERE id = @id
+  `);
+  return stmt.run(data);
+};
+
+/**
+ * CRUD helpers for 'servicios' with transaction-safe relation management.
+ */
+export const insertServicio = (data) => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    INSERT INTO servicios (nombre, precio_usd, es_exento, id_medico_defecto)
+    VALUES (@nombre, @precio_usd, @es_exento, @id_medico_defecto)
+  `);
+  return stmt.run(data);
+};
+
+export const updateServicio = (data) => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    UPDATE servicios 
+    SET nombre = @nombre, 
+        precio_usd = @precio_usd, 
+        es_exento = @es_exento, 
+        id_medico_defecto = @id_medico_defecto
+    WHERE id = @id
+  `);
+  return stmt.run(data);
+};
+
+export const deleteServicio = (id) => {
+  const db = getDb();
+  return executeTransaction(() => {
+    db.prepare('DELETE FROM servicio_insumos WHERE id_servicio = ?').run(id);
+    db.prepare('DELETE FROM servicios WHERE id = ?').run(id);
+  });
+};
+
+export const getAllServicios = () => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    SELECT s.*, m.nombre AS medico_nombre
+    FROM servicios s
+    LEFT JOIN medicos m ON s.id_medico_defecto = m.id
+    ORDER BY s.nombre ASC
+    LIMIT 100
+  `);
+  return stmt.all();
+};
+
+export const getServicioById = (id) => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    SELECT s.*, m.nombre AS medico_nombre
+    FROM servicios s
+    LEFT JOIN medicos m ON s.id_medico_defecto = m.id
+    WHERE s.id = ?
+  `);
+  return stmt.get(id);
+};
+
+export const getInsumosByServicio = (id_servicio) => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    SELECT si.*, i.nombre AS insumo_nombre, i.unidad_medida
+    FROM servicio_insumos si
+    JOIN insumos i ON si.id_insumo = i.id
+    WHERE si.id_servicio = ?
+  `);
+  return stmt.all(id_servicio);
+};
+
+export const setServicioInsumos = (id_servicio, insumos) => {
+  return executeTransaction(() => {
+    const db = getDb();
+    db.prepare('DELETE FROM servicio_insumos WHERE id_servicio = ?').run(id_servicio);
+    if (insumos && insumos.length > 0) {
+      const insertStmt = db.prepare(`
+        INSERT INTO servicio_insumos (id_servicio, id_insumo, cantidad)
+        VALUES (@id_servicio, @id_insumo, @cantidad)
+      `);
+      for (const insumo of insumos) {
+        insertStmt.run({
+          id_servicio,
+          id_insumo: insumo.id_insumo,
+          cantidad: insumo.cantidad
+        });
+      }
+    }
+  });
+};

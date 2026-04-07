@@ -118,15 +118,18 @@ export const updateDoctor = async (doctorData) => {
 export const deleteDoctor = async (id) => {
   try {
     const numericId = Number(id);
+    if (isNaN(numericId)) return { success: false, message: "ID de médico inválido." };
+
     if (isBrowser) {
       const doctors = getBrowserDoctors();
-      const index = doctors.findIndex(d => d.id === numericId);
+      const index = doctors.findIndex(d => Number(d.id) === numericId);
       if (index !== -1) {
           doctors[index].activo = 0; // Soft delete
           saveBrowserDoctors(doctors);
-          return { success: true, message: "Médico eliminado exitosamente (Modo Navegador)." };
+          console.log(`Médico ${numericId} desactivado.`);
+          return { success: true, message: "Médico eliminado exitosamente (Navegador)." };
       }
-      return { success: false, message: "Médico no encontrado." };
+      return { success: false, message: "Médico no encontrado en la base de datos local." };
     }
 
     const db = await getDbManager();

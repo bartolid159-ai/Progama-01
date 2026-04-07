@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
 import * as doctorService from '../../logic/doctorService.js';
+import ConfirmModal from '../Common/ConfirmModal';
+import Notification from '../Common/Notification';
 
 const DoctorList = ({ onAddClick, onEditClick, onDeleteClick }) => {
   const [doctors, setDoctors] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+
+  // UI States
+  const [modalOpen, setModalOpen] = useState(false);
+  const [doctorToDelete, setDoctorToDelete] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   const fetchDoctors = async () => {
     setLoading(true);
@@ -17,6 +24,10 @@ const DoctorList = ({ onAddClick, onEditClick, onDeleteClick }) => {
     fetchDoctors();
   }, []);
 
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+  };
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       const results = await doctorService.searchDoctors(searchTerm);
@@ -26,19 +37,43 @@ const DoctorList = ({ onAddClick, onEditClick, onDeleteClick }) => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
-  const handleDelete = async (id) => {
-    if (window.confirm('¿Está seguro de que desea eliminar este médico?')) {
-      const result = await doctorService.deleteDoctor(id);
-      if (result.success) {
-        fetchDoctors();
-      } else {
-        alert(result.message);
-      }
+  const handleDeleteClick = (doctor) => {
+    setDoctorToDelete(doctor);
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!doctorToDelete) return;
+    
+    const result = await doctorService.deleteDoctor(doctorToDelete.id);
+    if (result.success) {
+      showNotification('Médico eliminado correctamente');
+      fetchDoctors();
+    } else {
+      showNotification(result.message, 'error');
     }
+    setModalOpen(false);
+    setDoctorToDelete(null);
   };
 
   return (
     <div className="doctor-list animate-fade">
+      {notification && (
+        <Notification 
+          message={notification.message} 
+          type={notification.type} 
+          onClose={() => setNotification(null)} 
+        />
+      )}
+
+      <ConfirmModal 
+        isOpen={modalOpen}
+        title="Eliminar Médico"
+        message={`¿Está seguro de que desea eliminar al Dr(a). "${doctorToDelete?.nombre}"? Esta acción marcará al médico como inactivo.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setModalOpen(false)}
+      />
+
       <div className="search-bar-container">
         <input
           type="text"
@@ -96,7 +131,7 @@ const DoctorList = ({ onAddClick, onEditClick, onDeleteClick }) => {
                       <button 
                         className="btn-delete" 
                         title="Eliminar Médico" 
-                        onClick={() => handleDelete(d.id)}
+                        onClick={() => handleDeleteClick(d)}
                       >
                         🗑️
                       </button>

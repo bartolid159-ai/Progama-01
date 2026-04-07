@@ -3,6 +3,8 @@ import PatientList from './components/Patients/PatientList';
 import PatientForm from './components/Patients/PatientForm';
 import DoctorList from './components/Doctors/DoctorList';
 import DoctorForm from './components/Doctors/DoctorForm';
+import ServiceList from './components/Services/ServiceList';
+import ServiceForm from './components/Services/ServiceForm';
 import Banner from './components/Common/Banner';
 
 function App() {
@@ -16,6 +18,10 @@ function App() {
   // Doctor states
   const [showDoctorForm, setShowDoctorForm] = useState(false);
   const [editingDoctor, setEditingDoctor] = useState(null);
+  
+  // Service states
+  const [showServiceForm, setShowServiceForm] = useState(false);
+  const [editingService, setEditingService] = useState(null);
   
   const [banner, setBanner] = useState({ message: '', type: 'success' });
 
@@ -58,11 +64,26 @@ function App() {
     setShowDoctorForm(true);
   };
 
+  // Service handlers
+  const handleSaveService = (message) => {
+    setShowServiceForm(false);
+    setEditingService(null);
+    setBanner({ message, type: 'success' });
+    setActiveView('services');
+  };
+
+  const handleEditService = (service) => {
+    setEditingService(service);
+    setShowServiceForm(true);
+  };
+
   const handleCancelForm = () => {
     setShowPatientForm(false);
     setEditingPatient(null);
     setShowDoctorForm(false);
     setEditingDoctor(null);
+    setShowServiceForm(false);
+    setEditingService(null);
   };
 
   const closeBanner = () => setBanner({ ...banner, message: '' });
@@ -72,6 +93,7 @@ function App() {
       case 'dashboard': return 'Dashboard';
       case 'patients': return 'Gestión de Pacientes';
       case 'doctors': return 'Gestión de Médicos';
+      case 'services': return 'Gestión de Servicios';
       default: return 'Sistema de Gestión';
     }
   };
@@ -86,6 +108,7 @@ function App() {
           <li className={activeView === 'dashboard' ? 'active' : ''} onClick={() => setActiveView('dashboard')}>Dashboard</li>
           <li className={activeView === 'patients' ? 'active' : ''} onClick={() => setActiveView('patients')}>Pacientes</li>
           <li className={activeView === 'doctors' ? 'active' : ''} onClick={() => setActiveView('doctors')}>Médicos</li>
+          <li className={activeView === 'services' ? 'active' : ''} onClick={() => setActiveView('services')}>Servicios</li>
           <li>Facturación</li>
           <li>Inventario</li>
           <li>Liquidación</li>
@@ -132,8 +155,17 @@ function App() {
 
         {activeView === 'doctors' && (
           <DoctorList 
+            key={showDoctorForm ? 'editing' : 'list'}
             onAddClick={() => setShowDoctorForm(true)} 
             onEditClick={handleEditDoctor} 
+          />
+        )}
+
+        {activeView === 'services' && (
+          <ServiceList 
+            key={showServiceForm ? 'editing' : 'list'}
+            onAddClick={() => setShowServiceForm(true)} 
+            onEditClick={handleEditService} 
           />
         )}
 
@@ -149,6 +181,14 @@ function App() {
           <DoctorForm 
             doctor={editingDoctor}
             onSave={handleSaveDoctor} 
+            onCancel={handleCancelForm} 
+          />
+        )}
+
+        {showServiceForm && (
+          <ServiceForm 
+            service={editingService}
+            onSave={handleSaveService} 
             onCancel={handleCancelForm} 
           />
         )}

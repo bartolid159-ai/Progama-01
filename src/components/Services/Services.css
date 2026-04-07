@@ -1,0 +1,132 @@
+.service-list {
+  padding: 20px;
+}
+
+.iva-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.iva-badge.exento {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+}
+
+.iva-badge.iva-16 {
+  background: rgba(255, 152, 0, 0.2);
+  color: #FF9800;
+}
+
+.price-badge {
+  font-weight: 600;
+  color: #2196F3;
+}
+
+.insumos-badge {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-top: 24px;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.insumo-selector {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.insumo-selector select {
+  flex: 1;
+}
+
+.btn-add-insumo {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-add-insumo:hover {
+  background: #45a049;
+}
+
+.insumos-list {
+  margin-top: 12px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.mini-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mini-table th, .mini-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.mini-table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qty-control button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.qty-control button:hover {
+  background: #f0f0f0;
+}
+
+.btn-remove-insumo {
+  background: #f44336;
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-remove-insumo:hover {
+  background: #d32f2f;
+}
+
+.no-insumos {
+  font-size: 0.85rem;
+  color: #999;
+  text-align: center;
+  padding: 16px;
+}
