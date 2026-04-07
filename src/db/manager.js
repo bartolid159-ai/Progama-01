@@ -79,10 +79,19 @@ export function getDb(dbPath = process.env.NODE_ENV === 'test' ? ':memory:' : 'd
 
   // Conditionally load the initial schema if it exists 
   if (loadSchema) {
-    const schemaPath = pth.join(process.cwd(), 'src/db/schema.sql');
+    // Definimos la ruta relativa al archivo manager.js o al CWD
+    // En Vitest/Node, process.cwd() suele ser la raíz del proyecto
+    const schemaPath = pth.join(process.cwd(), 'src', 'db', 'schema.sql');
+    
     if (fs.existsSync(schemaPath)) {
-      const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-      dbInstance.exec(schemaSql);
+      try {
+        const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+        dbInstance.exec(schemaSql);
+      } catch (err) {
+        console.error("Error cargando el esquema SQL:", err);
+      }
+    } else {
+      console.warn(`Schema file not found at ${schemaPath}. Ensure you are running from project root.`);
     }
   }
   
