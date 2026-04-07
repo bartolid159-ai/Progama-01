@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.3.2...v1.4.0) (2026-04-07)
+
+
+### Features
+
+* Módulo de Médicos, Persistencia Interactiva y Nuevas Skills ([b979ebc](https://github.com/bartolid159-ai/Progama-01/commit/b979ebc06cbf34f5acc5625340476203c495988c))
+* **services:** fusionar cambios a main ([a235434](https://github.com/bartolid159-ai/Progama-01/commit/a235434e5f8dcd075eba0af4bd012d775961db6b))
+* **services:** implementar modulo de servicios, lookup de medicos y sistema de modales premium ([a2ba46a](https://github.com/bartolid159-ai/Progama-01/commit/a2ba46a0444f3098c3ac11046cc2362bd39845ef))
+
+
+### Bug Fixes
+
+* **services:** Restaurar isBrowser y forzar modo en tests ([dcc527e](https://github.com/bartolid159-ai/Progama-01/commit/dcc527e17fe8cea284cc652f4117572a4901ab33))
+
 ## [1.3.2](https://github.com/bartolid159-ai/Progama-01/compare/v1.3.1...v1.3.2) (2026-04-02)
 
 
