@@ -132,7 +132,7 @@ describe('processInvoice - Persistencia ACID', () => {
     expect(asientos[1].monto_usd).toBe(3);
   });
 
-  it.skip('debe calcular IVA para servicios no exentos', async () => {
+  it('debe calcular IVA para servicios no exentos', async () => {
     closeDb();
     getDb(':memory:');
     
@@ -167,7 +167,7 @@ describe('processInvoice - Persistencia ACID', () => {
       id_medico: 1,
       tasa_cambio: 36,
       items: [
-        { id_servicio: 2, cantidad: 1, precio_usd: 50, es_exento: false }
+        { id_servicio: 1, cantidad: 1, precio_usd: 50, es_exento: false }
       ],
       totals: { subtotal_usd: 50, iva_usd: 8, total_usd: 58, total_ves: 2088 },
       commission: 5.8,

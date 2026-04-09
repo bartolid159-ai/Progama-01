@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import InvoiceForm from '../Billing/InvoiceForm.jsx';
 import * as patientService from '../../logic/patientService';
 import * as doctorService from '../../logic/doctorService';
@@ -52,7 +52,9 @@ describe('InvoiceForm', () => {
     render(<InvoiceForm />);
     
     const input = screen.getByPlaceholderText(/buscar paciente/i);
-    fireEvent.change(input, { target: { value: 'Juan' } });
+    await act(async () => {
+      fireEvent.change(input, { target: { value: 'Juan' } });
+    });
     
     await waitFor(() => {
       expect(patientService.searchPatients).toHaveBeenCalledWith('Juan');
@@ -63,10 +65,14 @@ describe('InvoiceForm', () => {
     render(<InvoiceForm />);
     
     const doctorSelect = screen.getByText('Seleccione un médico...');
-    fireEvent.change(doctorSelect, { target: { value: '1' } });
+    await act(async () => {
+      fireEvent.change(doctorSelect, { target: { value: '1' } });
+    });
     
     const processBtn = screen.getByText(/procesar factura/i);
-    fireEvent.click(processBtn);
+    await act(async () => {
+      fireEvent.click(processBtn);
+    });
     
     await waitFor(() => {
       expect(screen.getByText(/Por favor seleccione un paciente para continuar/i)).toBeDefined();
@@ -77,7 +83,9 @@ describe('InvoiceForm', () => {
     render(<InvoiceForm />);
     
     const select = await screen.findByDisplayValue(/Seleccione un servicio.../i);
-    fireEvent.change(select, { target: { value: '1' } });
+    await act(async () => {
+      fireEvent.change(select, { target: { value: '1' } });
+    });
     
     await waitFor(() => {
       expect(screen.getByText('Consulta General')).toBeDefined();
