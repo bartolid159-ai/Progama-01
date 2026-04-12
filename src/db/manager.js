@@ -638,5 +638,6 @@ export const guardarCierreCaja = (data) => {
   return stmt.run({
     ...data,
     fecha: data.fecha || new Date().toISOString().split('T')[0]
-  });
+
+});
 };

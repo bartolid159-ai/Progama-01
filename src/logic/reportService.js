@@ -109,10 +109,31 @@ export const getFlujoDiario = (diasAtras = 7) => {
   }));
 };
 
+
+/**
+ * Calcula la diferencia entre lo declarado y lo teórico y retorna el estado del semáforo.
+ * @param {number} declarado - Monto declarado por el cajero (USD)
+ * @param {number} teorico - Monto teórico registrado en el sistema (USD)
+ * @returns {Object} { diferencia, estado }
+ */
+export const calcularDiferenciaCaja = (declarado, teorico) => {
+  const diferencia = round2(declarado - teorico);
+  let estado = 'OK';
+  
+  if (Math.abs(diferencia) > 5) {
+    estado = 'FALTANTE';
+  } else if (Math.abs(diferencia) > 0) {
+    estado = 'ALERTA';
+  }
+  
+  return { diferencia, estado };
+};
+
 export default {
   getKpiDia,
   getTopServicios,
   getStockAlertas,
   getFlujoDiario,
-  getAuditoriaTasas
+  getAuditoriaTasas,
+  calcularDiferenciaCaja
 };
