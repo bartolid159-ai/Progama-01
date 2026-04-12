@@ -82,6 +82,8 @@ CREATE TABLE IF NOT EXISTS facturas (
   total_usd REAL,
   total_ves REAL,
   estatus TEXT DEFAULT 'PAGADA',
+  metodo_pago TEXT DEFAULT 'EFECTIVO_USD',
+  detalle_pago TEXT,
   FOREIGN KEY(id_paciente) REFERENCES pacientes(id),
   FOREIGN KEY(id_medico) REFERENCES medicos(id)
 );
@@ -118,14 +120,15 @@ CREATE TABLE IF NOT EXISTS contabilidad_asientos (
   descripcion TEXT
 );
 
--- Cierres de caja diarios
+-- Cierres de caja (Cierre Ciego)
 CREATE TABLE IF NOT EXISTS cierres_caja (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-  monto_teorico_usd REAL,
-  monto_declarado_usd REAL,
-  diferencia REAL,
-  notas TEXT
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  fecha          DATE    NOT NULL,
+  declarado_usd  DECIMAL NOT NULL,
+  teorico_usd    DECIMAL NOT NULL,
+  diferencia_usd DECIMAL NOT NULL,
+  estado         TEXT    CHECK(estado IN ('OK','ALERTA','FALTANTE')) NOT NULL,
+  creado_en      DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Retrocompatibilidad Tarea 01
@@ -140,3 +143,10 @@ CREATE TABLE IF NOT EXISTS clients (
   name TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Migraciones
+-- Nota: En SQLite no hay 'ADD COLUMN IF NOT EXISTS'. 
+-- Estos fallarán si ya existen, lo cual es manejado por el motor de BD al inicializar si se desea.
+-- Para esta implementación simple, los dejamos como referencia de evolución del esquema.
+-- ALTER TABLE facturas ADD COLUMN metodo_pago TEXT DEFAULT 'EFECTIVO_USD';
+-- ALTER TABLE facturas ADD COLUMN detalle_pago TEXT;
