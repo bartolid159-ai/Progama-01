@@ -8,6 +8,11 @@ import * as serviceLogic from '../../logic/serviceLogic';
 vi.mock('../../logic/patientService');
 vi.mock('../../logic/doctorService');
 vi.mock('../../logic/serviceLogic');
+vi.mock('../../db/manager', () => ({
+  processInvoice: vi.fn(),
+  getDb: vi.fn(),
+  getTasaDelDia: vi.fn().mockResolvedValue(36.5)
+}));
 vi.mock('../../logic/billingEngine', () => ({
   calculateTotals: vi.fn((items, rate) => ({
     subtotal_usd: items.reduce((sum, i) => sum + (i.cantidad * i.precio_usd), 0),
@@ -104,12 +109,6 @@ describe('InvoiceForm', () => {
   });
 
   it('debe validar que los dígitos sean 4 en pagos electrónicos', async () => {
-    // Mock de manager para prevenir errores de ejecución
-    vi.mock('../../db/manager', () => ({
-      processInvoice: vi.fn(),
-      getDb: vi.fn()
-    }));
-
     render(<InvoiceForm />);
     
     // Seleccionar paciente
@@ -141,7 +140,8 @@ describe('InvoiceForm', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(/referencia/i)).toBeDefined();
-    });
+      const errorMsg = screen.getByText(/Debe ingresar los últimos 4 dígitos/i);
+      expect(errorMsg).toBeDefined();
+    }, { timeout: 4000 });
   });
 });
