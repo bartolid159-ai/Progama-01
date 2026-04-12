@@ -362,7 +362,7 @@ const InvoiceForm = ({ onProcessComplete }) => {
                     <td>${(lineaTotal + lineaIva).toFixed(2)}</td>
                     <td>
                       <button 
-                        type="button"
+                         type="button"
                         className="btn-delete"
                         onClick={() => removeItem(item.id_servicio)}
                         title="Eliminar"
