@@ -79,12 +79,10 @@ const InvoiceHistory = () => {
                 <th>N° Factura</th>
                 <th>Fecha</th>
                 <th>Paciente</th>
-                <th>Cédula</th>
-                <th>Teléfono</th>
-                <th>Médico</th>
                 <th>Total USD</th>
                 <th>Total VES</th>
-                <th>Tasa</th>
+                <th>Pago</th>
+                <th>Ref / Detalle</th>
                 <th>Estatus</th>
               </tr>
             </thead>
@@ -100,9 +98,6 @@ const InvoiceHistory = () => {
                     {formatDate(f.fecha)}
                   </td>
                   <td style={{ fontWeight: 600 }}>{f.paciente_nombre || '—'}</td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{f.paciente_cedula || '—'}</td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{f.paciente_telefono || '—'}</td>
-                  <td>{f.medico_nombre || '—'}</td>
                   <td>
                     <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>
                       ${Number(f.total_usd || 0).toFixed(2)}
@@ -113,8 +108,27 @@ const InvoiceHistory = () => {
                       Bs.{Number(f.total_ves || 0).toFixed(2)}
                     </span>
                   </td>
-                  <td style={{ color: 'var(--text-secondary)', fontSize: '0.87rem' }}>
-                    {Number(f.tasa_cambio || 0).toFixed(2)}
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {f.metodo_pago === 'TRANSFERENCIA' && (
+                        <span className="status-badge" style={{ background: 'rgba(56, 182, 255, 0.1)', color: '#38b6ff', border: '1px solid #38b6ff' }}>
+                          🏦 Transf
+                        </span>
+                      )}
+                      {f.metodo_pago === 'PAGO_MOVIL' && (
+                        <span className="status-badge" style={{ background: 'rgba(255, 158, 0, 0.1)', color: '#ff9e00', border: '1px solid #ff9e00' }}>
+                          📱 Móvil
+                        </span>
+                      )}
+                      {f.metodo_pago === 'EFECTIVO_USD' && (
+                        <span className="status-badge" style={{ background: 'rgba(74, 222, 128, 0.1)', color: '#4ade80', border: '1px solid #4ade80' }}>
+                          💵 Efectivo
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    {f.detalle_pago || '—'}
                   </td>
                   <td>
                     <span className={`status-badge ${f.estatus === 'PAGADA' ? 'active' : 'inactive'}`}>

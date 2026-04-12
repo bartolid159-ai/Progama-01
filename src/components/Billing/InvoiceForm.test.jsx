@@ -91,4 +91,57 @@ describe('InvoiceForm', () => {
       expect(screen.getByText('Consulta General')).toBeDefined();
     });
   });
+
+  it('debe mostrar campo de referencia para transferencias', async () => {
+    render(<InvoiceForm />);
+    
+    const pagoSelect = screen.getByLabelText(/Método de Pago/i);
+    await act(async () => {
+      fireEvent.change(pagoSelect, { target: { value: 'TRANSFERENCIA' } });
+    });
+    
+    expect(screen.getByText(/Últimos 4 Dígitos de Referencia/i)).toBeDefined();
+  });
+
+  it('debe validar que los dígitos sean 4 en pagos electrónicos', async () => {
+    // Mock de manager para prevenir errores de ejecución
+    vi.mock('../../db/manager', () => ({
+      processInvoice: vi.fn(),
+      getDb: vi.fn()
+    }));
+
+    render(<InvoiceForm />);
+    
+    // Seleccionar paciente
+    const patientInput = screen.getByPlaceholderText(/buscar paciente/i);
+    await act(async () => {
+      fireEvent.change(patientInput, { target: { value: 'Juan' } });
+    });
+    const suggestion = await screen.findByText('Juan Pérez');
+    fireEvent.click(suggestion);
+
+    // Seleccionar médico
+    const doctorSelect = screen.getByRole('combobox', { name: /Médico Tratante/i });
+    fireEvent.change(doctorSelect, { target: { value: '1' } });
+
+    // Agregar servicio
+    const serviceSelect = screen.getByDisplayValue(/Seleccione un servicio.../i);
+    fireEvent.change(serviceSelect, { target: { value: '1' } });
+
+    // Seleccionar Pago móvil e ingresar solo 2 dígitos
+    const pagoSelect = screen.getByLabelText(/Método de Pago/i);
+    fireEvent.change(pagoSelect, { target: { value: 'PAGO_MOVIL' } });
+    
+    const refInput = screen.getByPlaceholderText(/Ej: 1234/i);
+    fireEvent.change(refInput, { target: { value: '12' } });
+
+    const processBtn = screen.getByText(/procesar factura/i);
+    await act(async () => {
+      fireEvent.click(processBtn);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/referencia/i)).toBeDefined();
+    });
+  });
 });

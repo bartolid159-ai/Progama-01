@@ -1,142 +1,127 @@
--- Configuracion Global
-CREATE TABLE IF NOT EXISTS configuracion (
-  id INTEGER PRIMARY KEY,
-  clave TEXT UNIQUE NOT NULL,
-  valor TEXT,
-  ultima_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+-- Esquema Inicial para Programa Administrativo Local
+-- FASE 1 & 2: Gestión de Pacientes y Médicos
+-- FASE 3 & 4: Servicios y Facturación Bimoneda
 
--- Tabla de Pacientes
+-- Pacientes
 CREATE TABLE IF NOT EXISTS pacientes (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  cedula_rif TEXT UNIQUE,
-  nombre TEXT,
-  sexo TEXT,
-  fecha_nacimiento DATE,
-  telefono TEXT,
-  correo TEXT,
-  direccion TEXT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cedula_rif TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    sexo TEXT,
+    fecha_nacimiento DATE,
+    telefono TEXT,
+    email TEXT,
+    direccion TEXT,
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de Médicos
+-- Médicos
 CREATE TABLE IF NOT EXISTS medicos (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre TEXT_NOT_NULL,
-  cedula_rif TEXT,
-  telefono TEXT,
-  correo TEXT,
-  especialidad TEXT,
-  porcentaje_comision REAL,
-  activo BOOLEAN DEFAULT 1,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cedula_rif TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    especialidad TEXT,
+    telefono TEXT,
+    email TEXT,
+    porcentaje_comision REAL DEFAULT 0,
+    activo INTEGER DEFAULT 1
 );
 
--- Categorías de Insumos
-CREATE TABLE IF NOT EXISTS categorias_insumos (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre TEXT UNIQUE NOT NULL
-);
-
--- Inventario de Insumos (Actualizado PRD v2)
+-- Insumos (Inventario Médico)
 CREATE TABLE IF NOT EXISTS insumos (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  codigo TEXT UNIQUE,
-  nombre TEXT,
-  descripcion TEXT,
-  id_categoria INTEGER,
-  stock_actual INTEGER DEFAULT 0,
-  stock_minimo INTEGER DEFAULT 0,
-  unidad_medida TEXT,
-  costo_unitario_usd REAL DEFAULT 0.0,
-  FOREIGN KEY(id_categoria) REFERENCES categorias_insumos(id)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    unidad_medida TEXT, -- Ej: Und, ML, CC, Paquete
+    stock_actual REAL DEFAULT 0,
+    stock_minimo REAL DEFAULT 5,
+    precio_costo_usd REAL DEFAULT 0,
+    fecha_ultima_compra DATETIME
 );
 
--- Catálogo de Servicios
+-- ServiciosMédicos
 CREATE TABLE IF NOT EXISTS servicios (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre TEXT,
-  precio_usd REAL,
-  es_exento BOOLEAN DEFAULT 1,
-  id_medico_defecto INTEGER,
-  FOREIGN KEY(id_medico_defecto) REFERENCES medicos(id)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL,
+    precio_usd REAL NOT NULL,
+    es_exento INTEGER DEFAULT 1, -- 1=Sí, 0=No (Aplica IVA)
+    id_medico_defecto INTEGER,
+    FOREIGN KEY (id_medico_defecto) REFERENCES medicos(id)
 );
 
--- Intersección Servicios <-> Insumos (Receta autom.)
+-- Relación Servicio - Insumos (Receta de materiales por servicio)
 CREATE TABLE IF NOT EXISTS servicio_insumos (
-  id_servicio INTEGER,
-  id_insumo INTEGER,
-  cantidad INTEGER,
-  PRIMARY KEY (id_servicio, id_insumo),
-  FOREIGN KEY(id_servicio) REFERENCES servicios(id),
-  FOREIGN KEY(id_insumo) REFERENCES insumos(id)
+    id_servicio INTEGER,
+    id_insumo INTEGER,
+    cantidad REAL NOT NULL, -- Cuanto se consume de este insumo por cada servicio
+    PRIMARY KEY (id_servicio, id_insumo),
+    FOREIGN KEY (id_servicio) REFERENCES servicios(id),
+    FOREIGN KEY (id_insumo) REFERENCES insumos(id)
 );
 
--- Facturas
+-- Facturas (Cabecera)
 CREATE TABLE IF NOT EXISTS facturas (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  id_paciente INTEGER,
-  id_medico INTEGER,
-  fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-  tasa_cambio REAL,
-  total_usd REAL,
-  total_ves REAL,
-  estatus TEXT DEFAULT 'PAGADA',
-  FOREIGN KEY(id_paciente) REFERENCES pacientes(id),
-  FOREIGN KEY(id_medico) REFERENCES medicos(id)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_paciente INTEGER NOT NULL,
+    id_medico INTEGER NOT NULL,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tasa_cambio REAL NOT NULL,
+    subtotal_usd REAL NOT NULL,
+    iva_usd REAL NOT NULL,
+    total_usd REAL NOT NULL,
+    total_ves REAL NOT NULL,
+    comision_medico_usd REAL DEFAULT 0,
+    estatus TEXT DEFAULT 'PAGADA', -- PAGADA, ANULADA
+    metodo_pago TEXT DEFAULT 'EFECTIVO_USD', -- EFECTIVO_USD, TRANSFERENCIA, PAGO_MOVIL
+    detalle_pago TEXT, -- Diferencia ref o descripción de billetes
+    FOREIGN KEY (id_paciente) REFERENCES pacientes(id),
+    FOREIGN KEY (id_medico) REFERENCES medicos(id)
 );
 
 -- Detalles de Factura
 CREATE TABLE IF NOT EXISTS factura_detalles (
-  id_factura INTEGER,
-  id_servicio INTEGER,
-  cantidad INTEGER,
-  precio_unitario_usd REAL,
-  iva_porcentaje REAL DEFAULT 0.0,
-  FOREIGN KEY(id_factura) REFERENCES facturas(id),
-  FOREIGN KEY(id_servicio) REFERENCES servicios(id)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_factura INTEGER NOT NULL,
+    id_servicio INTEGER NOT NULL,
+    cantidad INTEGER NOT NULL,
+    precio_unitario_usd REAL NOT NULL,
+    es_exento INTEGER NOT NULL,
+    FOREIGN KEY (id_factura) REFERENCES facturas(id),
+    FOREIGN KEY (id_servicio) REFERENCES servicios(id)
 );
 
--- Historial de Tasas (PRD v2)
-CREATE TABLE IF NOT EXISTS historial_tasas (
-  fecha DATE PRIMARY KEY,
-  valor_bcv DECIMAL NOT NULL
+-- Historial de Consumo de Insumos (Trazabilidad)
+CREATE TABLE IF NOT EXISTS consumo_insumos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_factura INTEGER NOT NULL,
+    id_insumo INTEGER NOT NULL,
+    cantidad_consumida REAL NOT NULL,
+    costo_unitario_usd REAL NOT NULL,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_factura) REFERENCES facturas(id),
+    FOREIGN KEY (id_insumo) REFERENCES insumos(id)
 );
 
--- Contabilidad y Flujo Bimoneda (PRD v2)
+-- Contabilidad (Asientos de Ingresos)
+-- Para el Pareto de Ganancia Neta
 CREATE TABLE IF NOT EXISTS contabilidad_asientos (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-  tasa_referencia DECIMAL,
-  referencia_id INTEGER,
-  tipo TEXT, -- INGRESO, EGRESO
-  categoria TEXT, -- SERVICIO, COSTO_INSUMO, COMISION, GASTO_OPERATIVO
-  debe_usd DECIMAL DEFAULT 0.0,
-  haber_usd DECIMAL DEFAULT 0.0,
-  debe_ves DECIMAL DEFAULT 0.0,
-  haber_ves DECIMAL DEFAULT 0.0,
-  descripcion TEXT
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_factura INTEGER,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tipo TEXT NOT NULL, -- INGRESO, EGRESO
+    referencia TEXT, -- "Ingreso por Factura #XXX"
+    debe_usd REAL DEFAULT 0,
+    haber_usd REAL DEFAULT 0,
+    FOREIGN KEY (id_factura) REFERENCES facturas(id)
 );
 
--- Cierres de caja diarios
+-- Cierres de Caja
 CREATE TABLE IF NOT EXISTS cierres_caja (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-  monto_teorico_usd REAL,
-  monto_declarado_usd REAL,
-  diferencia REAL,
-  notas TEXT
-);
-
--- Retrocompatibilidad Tarea 01
-CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE,
-  password TEXT
-);
-
-CREATE TABLE IF NOT EXISTS clients (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fecha DATE NOT NULL,
+    teorico_usd REAL NOT NULL, -- Calculado por sistema
+    declarado_usd REAL NOT NULL, -- Introducido por usuario (Cierre Ciego)
+    diferencia_usd REAL NOT NULL,
+    estado TEXT DEFAULT 'CERRADO', -- CERRADO, AJUSTADO
+    creado_en DATETIME DEFAULT CURRENT_TIMESTAMP
 );

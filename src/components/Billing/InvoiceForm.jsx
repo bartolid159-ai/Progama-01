@@ -32,6 +32,10 @@ const InvoiceForm = ({ onProcessComplete }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [validationError, setValidationError] = useState(null);
 
+  // Pago
+  const [metodoPago, setMetodoPago] = useState('EFECTIVO_USD');
+  const [detallePago, setDetallePago] = useState('');
+
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -123,10 +127,17 @@ const InvoiceForm = ({ onProcessComplete }) => {
       setValidationError('Debe agregar al menos un servicio a la factura.');
       return;
     }
-    const exchangeRateVal = parseFloat(exchangeRateStr);
-    if (!exchangeRateVal || isNaN(exchangeRateVal) || exchangeRateVal <= 0) {
+    if (!exchangeRate || isNaN(exchangeRate) || exchangeRate <= 0) {
       setValidationError('Ingrese una tasa de cambio válida mayor a cero.');
       return;
+    }
+
+    // Validación de Pago
+    if ((metodoPago === 'TRANSFERENCIA' || metodoPago === 'PAGO_MOVIL')) {
+      if (!detallePago || detallePago.length !== 4) {
+        setValidationError('Debe ingresar los últimos 4 dígitos de la referencia');
+        return;
+      }
     }
 
     setShowConfirmModal(true);
@@ -149,7 +160,9 @@ const InvoiceForm = ({ onProcessComplete }) => {
         items: invoiceItems,
         totals,
         commission,
-        requiredInsumos
+        requiredInsumos,
+        metodo_pago: metodoPago,
+        detalle_pago: detallePago
       };
 
       // Persistencia real en SQLite
@@ -170,6 +183,8 @@ const InvoiceForm = ({ onProcessComplete }) => {
       setPatientSearch('');
       setSelectedDoctor('');
       setInvoiceItems([]);
+      setMetodoPago('EFECTIVO_USD');
+      setDetallePago('');
     } catch (error) {
       setNotification({ message: 'Error al procesar factura: ' + error.message, type: 'error' });
     } finally {
@@ -240,8 +255,9 @@ const InvoiceForm = ({ onProcessComplete }) => {
         </div>
 
         <div className="form-group">
-          <label>Médico Tratante *</label>
+          <label htmlFor="select-medico">Médico Tratante *</label>
           <select 
+            id="select-medico"
             value={selectedDoctor}
             onChange={(e) => setSelectedDoctor(e.target.value)}
           >
@@ -275,9 +291,10 @@ const InvoiceForm = ({ onProcessComplete }) => {
       <hr style={{ margin: '20px 0', borderColor: 'var(--border-color)' }} />
 
       <div className="form-group">
-        <label>Agregar Servicios</label>
+        <label htmlFor="select-servicio">Agregar Servicios</label>
         <div style={{ display: 'flex', gap: '10px' }}>
           <select 
+            id="select-servicio"
             className="form-input"
             style={{ flex: 2 }}
             onChange={(e) => {
@@ -345,7 +362,7 @@ const InvoiceForm = ({ onProcessComplete }) => {
                     <td>${(lineaTotal + lineaIva).toFixed(2)}</td>
                     <td>
                       <button 
-                        type="button"
+                         type="button"
                         className="btn-delete"
                         onClick={() => removeItem(item.id_servicio)}
                         title="Eliminar"
@@ -398,6 +415,51 @@ const InvoiceForm = ({ onProcessComplete }) => {
             </div>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '5px' }}>
               Tasa: {exchangeRate} VES/USD
+            </div>
+          </div>
+        </div>
+        
+        {/* Sección de Pago */}
+        <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px dashed var(--border-color)' }}>
+          <h4 style={{ marginBottom: '15px' }}>Información de Pago</h4>
+          <div className="patient-form-grid" style={{ marginTop: '0' }}>
+            <div className="form-group">
+              <label htmlFor="metodo-pago-select">Método de Pago *</label>
+              <select 
+                id="metodo-pago-select"
+                value={metodoPago}
+                onChange={(e) => {
+                  setMetodoPago(e.target.value);
+                  setDetallePago(''); // Reset al cambiar
+                }}
+              >
+                <option value="EFECTIVO_USD">💵 Efectivo USD</option>
+                <option value="TRANSFERENCIA">🏦 Transferencia Bancaria</option>
+                <option value="PAGO_MOVIL">📱 Pago Móvil</option>
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label>
+                {metodoPago === 'EFECTIVO_USD' 
+                  ? 'Descripción de Billetes (Opcional)' 
+                  : 'Últimos 4 Dígitos de Referencia *'}
+              </label>
+              <input 
+                type="text"
+                placeholder={metodoPago === 'EFECTIVO_USD' ? 'Ej: 2x$20, 1x$10' : 'Ej: 1234'}
+                value={detallePago}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (metodoPago !== 'EFECTIVO_USD') {
+                    if (/^\d*$/.test(val) && val.length <= 4) {
+                      setDetallePago(val);
+                    }
+                  } else {
+                    setDetallePago(val);
+                  }
+                }}
+              />
             </div>
           </div>
         </div>
