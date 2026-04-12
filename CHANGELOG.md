@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.6.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.5.0...v1.6.0) (2026-04-12)
+
+
+### Features
+
+* Bimoneda Accounting and BI Dashboard (Task 07) ([29565d0](https://github.com/bartolid159-ai/Progama-01/commit/29565d02d6462ecbed3f7a5cb54360b5d8ff5fa8))
+* implement bimoneda accounting and business intelligence dashboard (Task 07) ([30e34c1](https://github.com/bartolid159-ai/Progama-01/commit/30e34c1acd04ac280b9471180730fbeabb41c302))
+* métodos de pago y validación en facturación (Tarea 06) ([0e9759a](https://github.com/bartolid159-ai/Progama-01/commit/0e9759a6b5564b79509c4340c16a0b072f1cd715))
+
+
+### Bug Fixes
+
+* finalize database restoration and stabilize CI tests ([89dc87a](https://github.com/bartolid159-ai/Progama-01/commit/89dc87ac2d0d349c08e6694ca4dc374182a6e121))
+* restore core database layer and fix billing tests validation ([13a9dd5](https://github.com/bartolid159-ai/Progama-01/commit/13a9dd50df810f6e8d2e6bb0a0160edc44efa459))
+* update unit tests to align with PRD v2 bimoneda schema and UI changes ([34d048b](https://github.com/bartolid159-ai/Progama-01/commit/34d048b22a22c30e4634673ba57155f3c1a959af))
+
 ## [1.5.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.4.0...v1.5.0) (2026-04-07)
 
 
