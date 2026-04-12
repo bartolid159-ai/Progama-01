@@ -12,6 +12,8 @@ import StockAlertWidget from './components/Dashboard/StockAlertWidget';
 import RevenueChart from './components/Dashboard/RevenueChart';
 import Banner from './components/Common/Banner';
 import Dashboard from './components/Dashboard/Dashboard';
+import CashClosing from './components/Settings/CashClosing';
+import { crearBackup, limpiarBackupsAntiguos } from './logic/backupService';
 
 function App() {
   const [theme, setTheme] = useState('dark');
@@ -43,6 +45,21 @@ function App() {
       document.body.classList.remove('light-mode');
     }
   }, [theme]);
+
+  // Criterio Tarea 08: Respaldo automático al salir
+  useEffect(() => {
+    const triggerBackup = async () => {
+      try {
+        await crearBackup();
+        await limpiarBackupsAntiguos();
+      } catch (err) {
+        console.error("No se pudo realizar el respaldo automático:", err);
+      }
+    };
+
+    window.addEventListener('beforeunload', triggerBackup);
+    return () => window.removeEventListener('beforeunload', triggerBackup);
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
@@ -109,6 +126,7 @@ function App() {
       case 'doctors': return 'Gestión de Médicos';
       case 'services': return 'Gestión de Servicios';
       case 'billing': return 'Facturación';
+      case 'cashClosing': return 'Cierre de Caja';
       default: return 'Sistema de Gestión';
     }
   };
@@ -125,6 +143,7 @@ function App() {
           <li className={activeView === 'doctors' ? 'active' : ''} onClick={() => setActiveView('doctors')}>Médicos</li>
           <li className={activeView === 'services' ? 'active' : ''} onClick={() => setActiveView('services')}>Servicios</li>
           <li className={activeView === 'billing' ? 'active' : ''} onClick={() => { setActiveView('billing'); setBillingSubView('form'); }}>Facturación</li>
+          <li className={activeView === 'cashClosing' ? 'active' : ''} onClick={() => setActiveView('cashClosing')}>Caja (Cierre)</li>
           <li className={activeView === 'reports' ? 'active' : ''} onClick={() => setActiveView('reports')}>Reportes</li>
           <li>Inventario</li>
           <li>Liquidación</li>
@@ -208,6 +227,10 @@ function App() {
 
         {activeView === 'billing' && billingSubView === 'history' && (
           <InvoiceHistory />
+        )}
+
+        {activeView === 'cashClosing' && (
+          <CashClosing />
         )}
 
         {showPatientForm && (

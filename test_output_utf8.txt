@@ -1,0 +1,1554 @@
+﻿
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Users/Admin/Desktop/Programa 01[39m
+
+ [33mΓ¥»[39m src/components/Billing/InvoiceForm.test.jsx [2m ([22m[2m6 tests[22m [2m|[22m [31m1 failed[39m[2m)[22m[33m 1747[2mms[22m[39m
+[31m   [33mΓ¥»[31m src/components/Billing/InvoiceForm.test.jsx[2m > [22mInvoiceForm[2m > [22mdebe validar que los d├¡gitos sean 4 en pagos electr├│nicos[39m
+[31m     ΓåÆ Unable to find an element with the text: /debe ingresar exactamente los ├║ltimos 4 d├¡gitos/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"patient-list animate-in"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"patient-form-grid"[31m
+        [33mstyle[31m=[32m"margin-top: 0px; margin-bottom: 20px;"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"form-group full-width"[31m
+        [36m>[31m
+          [36m<label>[31m
+            [0mPaciente *[0m
+          [36m</label>[31m
+          [36m<div[31m
+            [33mstyle[31m=[32m"position: relative;"[31m
+          [36m>[31m
+            [36m<input[31m
+              [33mautocomplete[31m=[32m"off"[31m
+              [33mplaceholder[31m=[32m"Buscar paciente por nombre o c├⌐dula..."[31m
+              [33mtype[31m=[32m"text"[31m
+              [33mvalue[31m=[32m"Juan P├⌐rez"[31m
+            [36m/>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"form-group"[31m
+        [36m>[31m
+          [36m<label[31m
+            [33mfor[31m=[32m"select-medico"[31m
+          [36m>[31m
+            [0mM├⌐dico Tratante *[0m
+          [36m</label>[31m
+          [36m<select[31m
+            [33mid[31m=[32m"select-medico"[31m
+          [36m>[31m
+            [36m<option[31m
+              [33mvalue[31m=[32m""[31m
+            [36m>[31m
+              [0mSeleccione un m├⌐dico...[0m
+            [36m</option>[31m
+            [36m<option[31m
+              [33mvalue[31m=[32m"1"[31m
+            [36m>[31m
+              [0mDr. House[0m
+              [0m ([0m
+              [0mMedicina General[0m
+              [0m) - [0m
+              [0m10[0m
+              [0m% comisi├│n[0m
+            [36m</option>[31m
+          [36m</select>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"form-group"[31m
+        [36m>[31m
+          [36m<label>[31m
+            [0mTasa de Cambio (USD ΓåÆ VES) *[0m
+          [36m</label>[31m
+          [36m<input[31m
+            [33mid[31m=[32m"exchange-rate-input"[31m
+            [33minputmode[31m=[32m"decimal"[31m
+            [33mplaceholder[31m=[32m"Ej: 144.50"[31m
+            [33mtype[31m=[32m"text"[31m
+            [33mvalue[31m=[32m"36"[31m
+          [36m/>[31m
+          [36m<span[31m
+            [33mstyle[31m=[32m"font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px; display: block;"[31m
+          [36m>[31m
+            [0m1 USD = [0m
+            [0m36.00[0m
+            [0m VES[0m
+          [36m</span>[31m
+        [36m</div>[31m
+      [36m</div>[31m
+      [36m<hr[31m
+        [33mstyle[31m=[32m"margin: 20px 0px; border-color: var(--border-color);"[31m
+      [36m/>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"form-group"[31m
+      [36m>[31m
+        [36m<label[31m
+          [33mfor[31m=[32m"select-servicio"[31m
+        [36m>[31m
+          [0mAgregar Servicios[0m
+        [36m</label>[31m
+        [36m<div[31m
+          [33mstyle[31m=[32m"display: flex; gap: 10px;"[31m
+        [36m>[31m
+          [36m<select[31m
+            [33mclass[31m=[32m"form-input"[31m
+            [33mid[31m=[32m"select-servicio"[31m
+            [33mstyle[31m=[32m"flex: 2 1 0%;"[31m
+          [36m>[31m
+            [36m<option[31m
+              [33mdisabled[31m=[32m""[31m
+              [33mselected[31m=[32m""[31m
+              [33mvalue[31m=[32m""[31m
+            [36m>[31m
+              [0mSeleccione un servicio...[0m
+            [36m</option>[31m
+            [36m<option[31m
+              [33mvalue[31m=[32m"1"[31m
+            [36m>[31m
+              [0mConsulta General[0m
+              [0m - $[0m
+              [0m30.00[0m
+              [0m ([0m
+              [0mExento[0m
+              [0m)[0m
+            [36m</option>[31m
+            [36m<option[31m
+              [33mvalue[31m=[32m"2"[31m
+            [36m>[31m
+              [0mElectrocardiograma[0m
+              [0m - $[0m
+              [0m50.00[0m
+              [0m ([0m
+              [0mIVA 16%[0m
+              [0m)[0m
+            [36m</option>[31m
+          [36m</select>[31m
+        [36m</div>[31m
+      [36m</div>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"table-wrapper glassmorphism"[31m
+        [33mstyle[31m=[32m"margin-top: 15px;"[31m
+      [36m>[31m
+        [36m<table[31m
+          [33mclass[31m=[32m"modern-table"[31m
+        [36m>[31m
+          [36m<thead>[31m
+            [36m<tr>[31m
+              [36m<th>[31m
+                [0mServicio[0m
+              [36m</th>[31m
+              [36m<th>[31m
+                [0mPrecio Unit.[0m
+              [36m</th>[31m
+              [36m<th>[31m
+                [0mCantidad[0m
+              [36m</th>[31m
+              [36m<th>[31m
+                [0mSubtotal[0m
+              [36m</th>[31m
+              [36m<th>[31m
+                [0mIVA[0m
+              [36m</th>[31m
+              [36m<th>[31m
+                [0mTotal[0m
+              [36m</th>[31m
+              [36m<th>[31m
+                [0mAcciones[0m
+              [36m</th>[31m
+            [36m</tr>[31m
+          [36m</thead>[31m
+          [36m<tbody>[31m
+            [36m<tr>[31m
+              [36m<td>[31m
+                [0mConsulta General[0m
+              [36m</td>[31m
+              [36m<td>[31m
+                [0m$[0m
+                [0m30.00[0m
+              [36m</td>[31m
+              [36m<td>[31m
+                [36m<div[31m
+                  [33mstyle[31m=[32m"display: flex; align-items: center; gap: 8px;"[31m
+                [36m>[31m
+                  [36m<button[31m
+                    [33mclass[31m=[32m"btn-view"[31m
+                    [33mstyle[31m=[32m"width: 28px; height: 28px;"[31m
+                    [33mtype[31m=[32m"button"[31m
+                  [36m>[31m
+                    [0m-[0m
+                  [36m</button>[31m
+                  [36m<span[31m
+                    [33mstyle[31m=[32m"font-weight: bold; width: 20px; text-align: center;"[31m
+                  [36m>[31m
+                    [0m1[0m
+                  [36m</span>[31m
+                  [36m<button[31m
+                    [33mclass[31m=[32m"btn-view"[31m
+                    [33mstyle[31m=[32m"width: 28px; height: 28px;"[31m
+                    [33mtype[31m=[32m"button"[31m
+                  [36m>[31m
+                    [0m+[0m
+                  [36m</button>[31m
+                [36m</div>[31m
+              [36m</td>[31m
+              [36m<td>[31m
+                [0m$[0m
+                [0m30.00[0m
+              [36m</td>[31m
+              [36m<td>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"status-badge active"[31m
+                [36m>[31m
+                  [0mExento[0m
+                [36m</span>[31m
+              [36m</td>[31m
+              [36m<td>[31m
+                [0m$[0m
+                [0m30.00[0m
+              [36m</td>[31m
+              [36m<td>[31m
+                [36m<button[31m
+                  [33mclass[31m=[32m"btn-delete"[31m
+                  [33mtitle[31m=[32m"Eliminar"[31m
+                  [33mtype[31m=[32m"button"[31m
+                [36m>[31m
+                  [0m≡ƒùæ∩╕Å[0m
+                [36m</button>[31m
+              [36m</td>[31m
+            [36m</tr>[31m
+          [36m</tbody>[31m
+        [36m</table>[31m
+      [36m</div>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"totals-panel glassmorphism"[31m
+        [33mstyle[31m=[32m"margin-top: 20px; padding: 20px; border-radius: 12px; background: var(--bg-secondary); border: 1px solid var(--border-color);"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mstyle[31m=[32m"display: grid; grid-template-columns: 1fr 1fr; gap: 30px;"[31m
+        [36m>[31m
+          [36m<div>[31m
+            [36m<h4[31m
+              [33mstyle[31m=[32m"margin-bottom: 15px;"[31m
+            [36m>[31m
+              [0mResumen en USD[0m
+            [36m</h4>[31m
+            [36m<div[31m
+              [33mstyle[31m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px;"[31m
+            [36m>[31m
+              [36m<span>[31m
+                [0mSubtotal:[0m
+              [36m</span>[31m
+              [36m<span>[31m
+                [0m$[0m
+                [0m30.00[0m
+              [36m</span>[31m
+            [36m</div>[31m
+            [36m<div[31m
+              [33mstyle[31m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px;"[31m
+            [36m>[31m
+              [36m<span>[31m
+                [0mIVA (16%):[0m
+              [36m</span>[31m
+              [36m<span>[31m
+                [0m$[0m
+                [0m0.00[0m
+              [36m</span>[31m
+            [36m</div>[31m
+            [36m<div[31m
+              [33mstyle[31m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 700; font-size: 1.1rem;"[31m
+            [36m>[31m
+              [36m<span>[31m
+                [0mTotal USD:[0m
+              [36m</span>[31m
+              [36m<span[31m
+                [33mclass[31m=[32m"text-cyan"[31m
+              [36m>[31m
+                [0m$[0m
+                [0m0.00[0m
+              [36m</span>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div>[31m
+            [36m<h4[31m
+              [33mstyle[31m=[32m"margin-bottom: 15px;"[31m
+            [36m>[31m
+              [0mTotal en VES[0m
+            [36m</h4>[31m
+            [36m<div[31m
+              [33mstyle[31m=[32m"display: flex; justify-content: space-between; font-weight: 700; font-size: 1.3rem;"[31m
+            [36m>[31m
+              [36m<span>[31m
+                [0mTotal:[0m
+              [36m</span>[31m
+              [36m<span[31m
+                [33mclass[31m=[32m"text-cyan"[31m
+              [36m>[31m
+                [0mBs. [0m
+                [0m0.00[0m
+              [36m</span>[31m
+            [36m</div>[31m
+            [36m<div[31m
+              [33mstyle[31m=[32m"font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;"[31m
+            [36m>[31m
+              [0mTasa: [0m
+              [0m36[0m
+              [0m VES/USD[0m
+            [36m</div>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mstyle[31m=[32m"margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border-color);"[31m
+        [36m>[31m
+          [36m<h4[31m
+            [33mstyle[31m=[32m"margin-bottom: 15px;"[31m
+          [36m>[31m
+            [0mInformaci├│n de Pago[0m
+          [36m</h4>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"patient-form-grid"[31m
+            [33mstyle[31m=[32m"margin-top: 0px;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"form-group"[31m
+            [36m>[31m
+              [36m<label[31m
+                [33mfor[31m=[32m"metodo-pago-select"[31m
+              [36m>[31m
+                [0mM├⌐todo de Pago *[0m
+              [36m</label>[31m
+              [36m<select[31m
+                [33mid[31m=[32m"metodo-pago-select"[31m
+              [36m>[31m
+                [36m<option[31m
+                  [33mvalue[31m=[32m"EFECTIVO_USD"[31m
+                [36m>[31m
+                  [0m≡ƒÆ╡ Efectivo USD[0m
+                [36m</option>[31m
+                [36m<option[31m
+                  [33mvalue[31m=[32m"TRANSFERENCIA"[31m
+                [36m>[31m
+                  [0m≡ƒÅª Transferencia Bancaria[0m
+                [36m</option>[31m
+                [36m<option[31m
+                  [33mvalue[31m=[32m"PAGO_MOVIL"[31m
+                [36m>[31m
+                  [0m≡ƒô▒ Pago M├│vil[0m
+                [36m</option>[31m
+              [36m</select>[31m
+            [36m</div>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"form-group"[31m
+            [36m>[31m
+              [36m<label>[31m
+                [0m├Ültimos 4 D├¡gitos de Referencia *[0m
+              [36m</label>[31m
+              [36m<input[31m
+                [33mplaceholder[31m=[32m"Ej: 1234"[31m
+                [33mtype[31m=[32m"text"[31m
+                [33mvalue[31m=[32m"12"[31m
+              [36m/>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+      [36m</div>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"form-actions"[31m
+        [33mstyle[31m=[32m"margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;"[31m
+      [36m>[31m
+        [36m<button[31m
+          [33mclass[31m=[32m"btn-primary"[31m
+        [36m>[31m
+          [0m≡ƒÆ╛ Procesar Factura[0m
+        [36m</button>[31m
+      [36m</div>[31m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<html>[31m
+  [36m<head />[31m
+  [36m<body>[31m
+    [36m<div>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"patient-list animate-in"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"patient-form-grid"[31m
+          [33mstyle[31m=[32m"margin-top: 0px; margin-bottom: 20px;"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"form-group full-width"[31m
+          [36m>[31m
+            [36m<label>[31m
+              [0mPaciente *[0m
+            [36m</label>[31m
+            [36m<div[31m
+              [33mstyle[31m=[32m"position: relative;"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33mautocomplete[31m=[32m"off"[31m
+                [33mplaceholder[31m=[32m"Buscar paciente por nombre o c├⌐dula..."[31m
+                [33mtype[31m=[32m"text"[31m
+                [33mvalue[31m=[32m"Juan P├⌐rez"[31m
+              [36m/>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"form-group"[31m
+          [36m>[31m
+            [36m<label[31m
+              [33mfor[31m=[32m"select-medico"[31m
+            [36m>[31m
+              [0mM├⌐dico Tratante *[0m
+            [36m</label>[31m
+            [36m<select[31m
+              [33mid[31m=[32m"select-medico"[31m
+            [36m>[31m
+              [36m<option[31m
+                [33mvalue[31m=[32m""[31m
+              [36m>[31m
+                [0mSeleccione un m├⌐dico...[0m
+              [36m</option>[31m
+              [36m<option[31m
+                [33mvalue[31m=[32m"1"[31m
+              [36m>[31m
+                [0mDr. House[0m
+                [0m ([0m
+                [0mMedicina General[0m
+                [0m) - [0m
+                [0m10[0m
+                [0m% comisi├│n[0m
+              [36m</option>[31m
+            [36m</select>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"form-group"[31m
+          [36m>[31m
+            [36m<label>[31m
+              [0mTasa de Cambio (USD ΓåÆ VES) *[0m
+            [36m</label>[31m
+            [36m<input[31m
+              [33mid[31m=[32m"exchange-rate-input"[31m
+              [33minputmode[31m=[32m"decimal"[31m
+              [33mplaceholder[31m=[32m"Ej: 144.50"[31m
+              [33mtype[31m=[32m"text"[31m
+              [33mvalue[31m=[32m"36"[31m
+            [36m/>[31m
+            [36m<span[31m
+              [33mstyle[31m=[32m"font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px; display: block;"[31m
+            [36m>[31m
+              [0m1 USD = [0m
+              [0m36.00[0m
+              [0m VES[0m
+            [36m</span>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+        [36m<hr[31m
+          [33mstyle[31m=[32m"margin: 20px 0px; border-color: var(--border-color);"[31m
+        [36m/>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"form-group"[31m
+        [36m>[31m
+          [36m<label[31m
+            [33mfor[31m=[32m"select-servicio"[31m
+          [36m>[31m
+            [0mAgregar Servicios[0m
+          [36m</label>[31m
+          [36m<div[31m
+            [33mstyle[31m=[32m"display: flex; gap: 10px;"[31m
+          [36m>[31m
+            [36m<select[31m
+              [33mclass[31m=[32m"form-input"[31m
+              [33mid[31m=[32m"select-servicio"[31m
+              [33mstyle[31m=[32m"flex: 2 1 0%;"[31m
+            [36m>[31m
+              [36m<option[31m
+                [33mdisabled[31m=[32m""[31m
+                [33mselected[31m=[32m""[31m
+                [33mvalue[31m=[32m""[31m
+              [36m>[31m
+                [0mSeleccione un servicio...[0m
+              [36m</option>[31m
+              [36m<option[31m
+                [33mvalue[31m=[32m"1"[31m
+              [36m>[31m
+                [0mConsulta General[0m
+                [0m - $[0m
+                [0m30.00[0m
+                [0m ([0m
+                [0mExento[0m
+                [0m)[0m
+              [36m</option>[31m
+              [36m<option[31m
+                [33mvalue[31m=[32m"2"[31m
+              [36m>[31m
+                [0mElectrocardiograma[0m
+                [0m - $[0m
+                [0m50.00[0m
+                [0m ([0m
+                [0mIVA 16%[0m
+                [0m)[0m
+              [36m</option>[31m
+            [36m</select>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"table-wrapper glassmorphism"[31m
+          [33mstyle[31m=[32m"margin-top: 15px;"[31m
+        [36m>[31m
+          [36m<table[31m
+            [33mclass[31m=[32m"modern-table"[31m
+          [36m>[31m
+            [36m<thead>[31m
+              [36m<tr>[31m
+                [36m<th>[31m
+                  [0mServicio[0m
+                [36m</th>[31m
+                [36m<th>[31m
+                  [0mPrecio Unit.[0m
+                [36m</th>[31m
+                [36m<th>[31m
+                  [0mCantidad[0m
+                [36m</th>[31m
+                [36m<th>[31m
+                  [0mSubtotal[0m
+                [36m</th>[31m
+                [36m<th>[31m
+                  [0mIVA[0m
+                [36m</th>[31m
+                [36m<th>[31m
+                  [0mTotal[0m
+                [36m</th>[31m
+                [36m<th>[31m
+                  [0mAcciones[0m
+                [36m</th>[31m
+              [36m</tr>[31m
+            [36m</thead>[31m
+            [36m<tbody>[31m
+              [36m<tr>[31m
+                [36m<td>[31m
+                  [0mConsulta General[0m
+                [36m</td>[31m
+                [36m<td>[31m
+                  [0m$[0m
+                  [0m30.00[0m
+                [36m</td>[31m
+                [36m<td>[31m
+                  [36m<div[31m
+                    [33mstyle[31m=[32m"display: flex; align-items: center; gap: 8px;"[31m
+                  [36m>[31m
+                    [36m<button[31m
+                      [33mclass[31m=[32m"btn-view"[31m
+                      [33mstyle[31m=[32m"width: 28px; height: 28px;"[31m
+                      [33mtype[31m=[32m"button"[31m
+                    [36m>[31m
+                      [0m-[0m
+                    [36m</button>[31m
+                    [36m<span[31m
+                      [33mstyle[31m=[32m"font-weight: bold; width: 20px; text-align: center;"[31m
+                    [36m>[31m
+                      [0m1[0m
+                    [36m</span>[31m
+                    [36m<button[31m
+                      [33mclass[31m=[32m"btn-view"[31m
+                      [33mstyle[31m=[32m"width: 28px; height: 28px;"[31m
+                      [33mtype[31m=[32m"button"[31m
+                    [36m>[31m
+                      [0m+[0m
+                    [36m</button>[31m
+                  [36m</div>[31m
+                [36m</td>[31m
+                [36m<td>[31m
+                  [0m$[0m
+                  [0m30.00[0m
+                [36m</td>[31m
+                [36m<td>[31m
+                  [36m<span[31m
+                    [33mclass[31m=[32m"status-badge active"[31m
+                  [36m>[31m
+                    [0mExento[0m
+                  [36m</span>[31m
+                [36m</td>[31m
+                [36m<td>[31m
+                  [0m$[0m
+                  [0m30.00[0m
+                [36m</td>[31m
+                [36m<td>[31m
+                  [36m<button[31m
+                    [33mclass[31m=[32m"btn-delete"[31m
+                    [33mtitle[31m=[32m"Eliminar"[31m
+                    [33mtype[31m=[32m"button"[31m
+                  [36m>[31m
+                    [0m≡ƒùæ∩╕Å[0m
+                  [36m</button>[31m
+                [36m</td>[31m
+              [36m</tr>[31m
+            [36m</tbody>[31m
+          [36m</table>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"totals-panel glassmorphism"[31m
+          [33mstyle[31m=[32m"margin-top: 20px; padding: 20px; border-radius: 12px; background: var(--bg-secondary); border: 1px solid var(--border-color);"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mstyle[31m=[32m"display: grid; grid-template-columns: 1fr 1fr; gap: 30px;"[31m
+          [36m>[31m
+            [36m<div>[31m
+              [36m<h4[31m
+                [33mstyle[31m=[32m"margin-bottom: 15px;"[31m
+              [36m>[31m
+                [0mResumen en USD[0m
+              [36m</h4>[31m
+              [36m<div[31m
+                [33mstyle[31m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px;"[31m
+              [36m>[31m
+                [36m<span>[31m
+                  [0mSubtotal:[0m
+                [36m</span>[31m
+                [36m<span>[31m
+                  [0m$[0m
+                  [0m30.00[0m
+                [36m</span>[31m
+              [36m</div>[31m
+              [36m<div[31m
+                [33mstyle[31m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px;"[31m
+              [36m>[31m
+                [36m<span>[31m
+                  [0mIVA (16%):[0m
+                [36m</span>[31m
+                [36m<span>[31m
+                  [0m$[0m
+                  [0m0.00[0m
+                [36m</span>[31m
+              [36m</div>[31m
+              [36m<div[31m
+                [33mstyle[31m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 700; font-size: 1.1rem;"[31m
+              [36m>[31m
+                [36m<span>[31m
+                  [0mTotal USD:[0m
+                [36m</span>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"text-cyan"[31m
+                [36m>[31m
+                  [0m$[0m
+                  [0m0.00[0m
+                [36m</span>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+            [36m<div>[31m
+              [36m<h4[31m
+                [33mstyle[31m=[32m"margin-bottom: 15px;"[31m
+              [36m>[31m
+                [0mTotal en VES[0m
+              [36m</h4>[31m
+              [36m<div[31m
+                [33mstyle[31m=[32m"display: flex; justify-content: space-between; font-weight: 700; font-size: 1.3rem;"[31m
+              [36m>[31m
+                [36m<span>[31m
+                  [0mTotal:[0m
+                [36m</span>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"text-cyan"[31m
+                [36m>[31m
+                  [0mBs. [0m
+                  [0m0.00[0m
+                [36m</span>[31m
+              [36m</div>[31m
+              [36m<div[31m
+                [33mstyle[31m=[32m"font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;"[31m
+              [36m>[31m
+                [0mTasa: [0m
+                [0m36[0m
+                [0m VES/USD[0m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mstyle[31m=[32m"margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border-color);"[31m
+          [36m>[31m
+            [36m<h4[31m
+              [33mstyle[31m=[32m"margin-bottom: 15px;"[31m
+            [36m>[31m
+              [0mInformaci├│n de Pago[0m
+            [36m</h4>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"patient-form-grid"[31m
+              [33mstyle[31m=[32m"margin-top: 0px;"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"form-group"[31m
+              [36m>[31m
+                [36m<label[31m
+                  [33mfor[31m=[32m"metodo-pago-select"[31m
+                [36m>[31m
+                  [0mM├⌐todo de Pago *[0m
+                [36m</label>[31m
+                [36m<select[31m
+                  [33mid[31m=[32m"metodo-pago-select"[31m
+                [36m>[31m
+                  [36m<option[31m
+                    [33mvalue[31m=[32m"EFECTIVO_USD"[31m
+                  [36m>[31m
+                    [0m≡ƒÆ╡ Efectivo USD[0m
+                  [36m</option>[31m
+                  [36m<option[31m
+                    [33mvalue[31m=[32m"TRANSFERENCIA"[31m
+                  [36m>[31m
+                    [0m≡ƒÅª Transferencia Bancaria[0m
+                  [36m</option>[31m
+                  [36m<option[31m
+                    [33mvalue[31m=[32m"PAGO_MOVIL"[31m
+                  [36m>[31m
+                    [0m≡ƒô▒ Pago M├│vil[0m
+                  [36m</option>[31m
+                [36m</select>[31m
+              [36m</div>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"form-group"[31m
+              [36m>[31m
+                [36m<label>[31m
+                  [0m├Ültimos 4 D├¡gitos de Referencia *[0m
+                [36m</label>[31m
+                [36m<input[31m
+                  [33mplaceholder[31m=[32m"Ej: 1234"[31m
+                  [33mtype[31m=[32m"text"[31m
+                  [33mvalue[31m=[32m"12"[31m
+                [36m/>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"form-actions"[31m
+          [33mstyle[31m=[32m"margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;"[31m
+        [36m>[31m
+          [36m<button[31m
+            [33mclass[31m=[32m"btn-primary"[31m
+          [36m>[31m
+            [0m≡ƒÆ╛ Procesar Factura[0m
+          [36m</button>[31m
+        [36m</div>[31m
+      [36m</div>[31m
+    [36m</div>[31m
+  [36m</body>[31m
+[36m</html>[31m[39m
+
+node.exe : [31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1m[7m Failed Tests 1 [27m[22mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[39m
+En línea: 1 Carácter: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([31mΓÄ»ΓÄ»ΓÄ»Γ...»ΓÄ»ΓÄ»ΓÄ»[39m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/Billing/InvoiceForm.test.jsx[2m > [22mInvoiceForm[2m > [22mdebe 
+validar que los d├¡gitos sean 4 en pagos electr├│nicos
+[31m[1mTestingLibraryElementError[22m[39m: Unable to find an element with the text: /debe ingresar exactamente los 
+├║ltimos 4 d├¡gitos/i. This could be because the text is broken up by multiple elements. In this case, you can provide 
+a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"patient-list animate-in"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"patient-form-grid"[39m
+        [33mstyle[39m=[32m"margin-top: 0px; margin-bottom: 20px;"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group full-width"[39m
+        [36m>[39m
+          [36m<label>[39m
+            [0mPaciente *[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mstyle[39m=[32m"position: relative;"[39m
+          [36m>[39m
+            [36m<input[39m
+              [33mautocomplete[39m=[32m"off"[39m
+              [33mplaceholder[39m=[32m"Buscar paciente por nombre o c├⌐dula..."[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m"Juan P├⌐rez"[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"select-medico"[39m
+          [36m>[39m
+            [0mM├⌐dico Tratante *[0m
+          [36m</label>[39m
+          [36m<select[39m
+            [33mid[39m=[32m"select-medico"[39m
+          [36m>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m""[39m
+            [36m>[39m
+              [0mSeleccione un m├⌐dico...[0m
+            [36m</option>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m"1"[39m
+            [36m>[39m
+              [0mDr. House[0m
+              [0m ([0m
+              [0mMedicina General[0m
+              [0m) - [0m
+              [0m10[0m
+              [0m% comisi├│n[0m
+            [36m</option>[39m
+          [36m</select>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group"[39m
+        [36m>[39m
+          [36m<label>[39m
+            [0mTasa de Cambio (USD ΓåÆ VES) *[0m
+          [36m</label>[39m
+          [36m<input[39m
+            [33mid[39m=[32m"exchange-rate-input"[39m
+            [33minputmode[39m=[32m"decimal"[39m
+            [33mplaceholder[39m=[32m"Ej: 144.50"[39m
+            [33mtype[39m=[32m"text"[39m
+            [33mvalue[39m=[32m"36"[39m
+          [36m/>[39m
+          [36m<span[39m
+            [33mstyle[39m=[32m"font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px; display: 
+block;"[39m
+          [36m>[39m
+            [0m1 USD = [0m
+            [0m36.00[0m
+            [0m VES[0m
+          [36m</span>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<hr[39m
+        [33mstyle[39m=[32m"margin: 20px 0px; border-color: var(--border-color);"[39m
+      [36m/>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"form-group"[39m
+      [36m>[39m
+        [36m<label[39m
+          [33mfor[39m=[32m"select-servicio"[39m
+        [36m>[39m
+          [0mAgregar Servicios[0m
+        [36m</label>[39m
+        [36m<div[39m
+          [33mstyle[39m=[32m"display: flex; gap: 10px;"[39m
+        [36m>[39m
+          [36m<select[39m
+            [33mclass[39m=[32m"form-input"[39m
+            [33mid[39m=[32m"select-servicio"[39m
+            [33mstyle[39m=[32m"flex: 2 1 0%;"[39m
+          [36m>[39m
+            [36m<option[39m
+              [33mdisabled[39m=[32m""[39m
+              [33mselected[39m=[32m""[39m
+              [33mvalue[39m=[32m""[39m
+            [36m>[39m
+              [0mSeleccione un servicio...[0m
+            [36m</option>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m"1"[39m
+            [36m>[39m
+              [0mConsulta General[0m
+              [0m - $[0m
+              [0m30.00[0m
+              [0m ([0m
+              [0mExento[0m
+              [0m)[0m
+            [36m</option>[39m
+            [36m<option[39m
+              [33mvalue[39m=[32m"2"[39m
+            [36m>[39m
+              [0mElectrocardiograma[0m
+              [0m - $[0m
+              [0m50.00[0m
+              [0m ([0m
+              [0mIVA 16%[0m
+              [0m)[0m
+            [36m</option>[39m
+          [36m</select>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"table-wrapper glassmorphism"[39m
+        [33mstyle[39m=[32m"margin-top: 15px;"[39m
+      [36m>[39m
+        [36m<table[39m
+          [33mclass[39m=[32m"modern-table"[39m
+        [36m>[39m
+          [36m<thead>[39m
+            [36m<tr>[39m
+              [36m<th>[39m
+                [0mServicio[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mPrecio Unit.[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mCantidad[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mSubtotal[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mIVA[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mTotal[0m
+              [36m</th>[39m
+              [36m<th>[39m
+                [0mAcciones[0m
+              [36m</th>[39m
+            [36m</tr>[39m
+          [36m</thead>[39m
+          [36m<tbody>[39m
+            [36m<tr>[39m
+              [36m<td>[39m
+                [0mConsulta General[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m$[0m
+                [0m30.00[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<div[39m
+                  [33mstyle[39m=[32m"display: flex; align-items: center; gap: 8px;"[39m
+                [36m>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"btn-view"[39m
+                    [33mstyle[39m=[32m"width: 28px; height: 28px;"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [0m-[0m
+                  [36m</button>[39m
+                  [36m<span[39m
+                    [33mstyle[39m=[32m"font-weight: bold; width: 20px; text-align: center;"[39m
+                  [36m>[39m
+                    [0m1[0m
+                  [36m</span>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"btn-view"[39m
+                    [33mstyle[39m=[32m"width: 28px; height: 28px;"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [0m+[0m
+                  [36m</button>[39m
+                [36m</div>[39m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m$[0m
+                [0m30.00[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"status-badge active"[39m
+                [36m>[39m
+                  [0mExento[0m
+                [36m</span>[39m
+              [36m</td>[39m
+              [36m<td>[39m
+                [0m$[0m
+                [0m30.00[0m
+              [36m</td>[39m
+              [36m<td>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"btn-delete"[39m
+                  [33mtitle[39m=[32m"Eliminar"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m≡ƒùæ∩╕Å[0m
+                [36m</button>[39m
+              [36m</td>[39m
+            [36m</tr>[39m
+          [36m</tbody>[39m
+        [36m</table>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"totals-panel glassmorphism"[39m
+        [33mstyle[39m=[32m"margin-top: 20px; padding: 20px; border-radius: 12px; background: var(--bg-secondary); 
+border: 1px solid var(--border-color);"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mstyle[39m=[32m"display: grid; grid-template-columns: 1fr 1fr; gap: 30px;"[39m
+        [36m>[39m
+          [36m<div>[39m
+            [36m<h4[39m
+              [33mstyle[39m=[32m"margin-bottom: 15px;"[39m
+            [36m>[39m
+              [0mResumen en USD[0m
+            [36m</h4>[39m
+            [36m<div[39m
+              [33mstyle[39m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px;"[39m
+            [36m>[39m
+              [36m<span>[39m
+                [0mSubtotal:[0m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0m$[0m
+                [0m30.00[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mstyle[39m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px;"[39m
+            [36m>[39m
+              [36m<span>[39m
+                [0mIVA (16%):[0m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0m$[0m
+                [0m0.00[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mstyle[39m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 
+700; font-size: 1.1rem;"[39m
+            [36m>[39m
+              [36m<span>[39m
+                [0mTotal USD:[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-cyan"[39m
+              [36m>[39m
+                [0m$[0m
+                [0m0.00[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div>[39m
+            [36m<h4[39m
+              [33mstyle[39m=[32m"margin-bottom: 15px;"[39m
+            [36m>[39m
+              [0mTotal en VES[0m
+            [36m</h4>[39m
+            [36m<div[39m
+              [33mstyle[39m=[32m"display: flex; justify-content: space-between; font-weight: 700; font-size: 
+1.3rem;"[39m
+            [36m>[39m
+              [36m<span>[39m
+                [0mTotal:[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-cyan"[39m
+              [36m>[39m
+                [0mBs. [0m
+                [0m0.00[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mstyle[39m=[32m"font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;"[39m
+            [36m>[39m
+              [0mTasa: [0m
+              [0m36[0m
+              [0m VES/USD[0m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mstyle[39m=[32m"margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border-color);"[39m
+        [36m>[39m
+          [36m<h4[39m
+            [33mstyle[39m=[32m"margin-bottom: 15px;"[39m
+          [36m>[39m
+            [0mInformaci├│n de Pago[0m
+          [36m</h4>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"patient-form-grid"[39m
+            [33mstyle[39m=[32m"margin-top: 0px;"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"form-group"[39m
+            [36m>[39m
+              [36m<label[39m
+                [33mfor[39m=[32m"metodo-pago-select"[39m
+              [36m>[39m
+                [0mM├⌐todo de Pago *[0m
+              [36m</label>[39m
+              [36m<select[39m
+                [33mid[39m=[32m"metodo-pago-select"[39m
+              [36m>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"EFECTIVO_USD"[39m
+                [36m>[39m
+                  [0m≡ƒÆ╡ Efectivo USD[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"TRANSFERENCIA"[39m
+                [36m>[39m
+                  [0m≡ƒÅª Transferencia Bancaria[0m
+                [36m</option>[39m
+                [36m<option[39m
+                  [33mvalue[39m=[32m"PAGO_MOVIL"[39m
+                [36m>[39m
+                  [0m≡ƒô▒ Pago M├│vil[0m
+                [36m</option>[39m
+              [36m</select>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"form-group"[39m
+            [36m>[39m
+              [36m<label>[39m
+                [0m├Ültimos 4 D├¡gitos de Referencia *[0m
+              [36m</label>[39m
+              [36m<input[39m
+                [33mplaceholder[39m=[32m"Ej: 1234"[39m
+                [33mtype[39m=[32m"text"[39m
+                [33mvalue[39m=[32m"12"[39m
+              [36m/>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"form-actions"[39m
+        [33mstyle[39m=[32m"margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"btn-primary"[39m
+        [36m>[39m
+          [0m≡ƒÆ╛ Procesar Factura[0m
+        [36m</button>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"patient-list animate-in"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"patient-form-grid"[39m
+          [33mstyle[39m=[32m"margin-top: 0px; margin-bottom: 20px;"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"form-group full-width"[39m
+          [36m>[39m
+            [36m<label>[39m
+              [0mPaciente *[0m
+            [36m</label>[39m
+            [36m<div[39m
+              [33mstyle[39m=[32m"position: relative;"[39m
+            [36m>[39m
+              [36m<input[39m
+                [33mautocomplete[39m=[32m"off"[39m
+                [33mplaceholder[39m=[32m"Buscar paciente por nombre o c├⌐dula..."[39m
+                [33mtype[39m=[32m"text"[39m
+                [33mvalue[39m=[32m"Juan P├⌐rez"[39m
+              [36m/>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"form-group"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mfor[39m=[32m"select-medico"[39m
+            [36m>[39m
+              [0mM├⌐dico Tratante *[0m
+            [36m</label>[39m
+            [36m<select[39m
+              [33mid[39m=[32m"select-medico"[39m
+            [36m>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m""[39m
+              [36m>[39m
+                [0mSeleccione un m├⌐dico...[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"1"[39m
+              [36m>[39m
+                [0mDr. House[0m
+                [0m ([0m
+                [0mMedicina General[0m
+                [0m) - [0m
+                [0m10[0m
+                [0m% comisi├│n[0m
+              [36m</option>[39m
+            [36m</select>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"form-group"[39m
+          [36m>[39m
+            [36m<label>[39m
+              [0mTasa de Cambio (USD ΓåÆ VES) *[0m
+            [36m</label>[39m
+            [36m<input[39m
+              [33mid[39m=[32m"exchange-rate-input"[39m
+              [33minputmode[39m=[32m"decimal"[39m
+              [33mplaceholder[39m=[32m"Ej: 144.50"[39m
+              [33mtype[39m=[32m"text"[39m
+              [33mvalue[39m=[32m"36"[39m
+            [36m/>[39m
+            [36m<span[39m
+              [33mstyle[39m=[32m"font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px; display: 
+block;"[39m
+            [36m>[39m
+              [0m1 USD = [0m
+              [0m36.00[0m
+              [0m VES[0m
+            [36m</span>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<hr[39m
+          [33mstyle[39m=[32m"margin: 20px 0px; border-color: var(--border-color);"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-group"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mfor[39m=[32m"select-servicio"[39m
+          [36m>[39m
+            [0mAgregar Servicios[0m
+          [36m</label>[39m
+          [36m<div[39m
+            [33mstyle[39m=[32m"display: flex; gap: 10px;"[39m
+          [36m>[39m
+            [36m<select[39m
+              [33mclass[39m=[32m"form-input"[39m
+              [33mid[39m=[32m"select-servicio"[39m
+              [33mstyle[39m=[32m"flex: 2 1 0%;"[39m
+            [36m>[39m
+              [36m<option[39m
+                [33mdisabled[39m=[32m""[39m
+                [33mselected[39m=[32m""[39m
+                [33mvalue[39m=[32m""[39m
+              [36m>[39m
+                [0mSeleccione un servicio...[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"1"[39m
+              [36m>[39m
+                [0mConsulta General[0m
+                [0m - $[0m
+                [0m30.00[0m
+                [0m ([0m
+                [0mExento[0m
+                [0m)[0m
+              [36m</option>[39m
+              [36m<option[39m
+                [33mvalue[39m=[32m"2"[39m
+              [36m>[39m
+                [0mElectrocardiograma[0m
+                [0m - $[0m
+                [0m50.00[0m
+                [0m ([0m
+                [0mIVA 16%[0m
+                [0m)[0m
+              [36m</option>[39m
+            [36m</select>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"table-wrapper glassmorphism"[39m
+          [33mstyle[39m=[32m"margin-top: 15px;"[39m
+        [36m>[39m
+          [36m<table[39m
+            [33mclass[39m=[32m"modern-table"[39m
+          [36m>[39m
+            [36m<thead>[39m
+              [36m<tr>[39m
+                [36m<th>[39m
+                  [0mServicio[0m
+                [36m</th>[39m
+                [36m<th>[39m
+                  [0mPrecio Unit.[0m
+                [36m</th>[39m
+                [36m<th>[39m
+                  [0mCantidad[0m
+                [36m</th>[39m
+                [36m<th>[39m
+                  [0mSubtotal[0m
+                [36m</th>[39m
+                [36m<th>[39m
+                  [0mIVA[0m
+                [36m</th>[39m
+                [36m<th>[39m
+                  [0mTotal[0m
+                [36m</th>[39m
+                [36m<th>[39m
+                  [0mAcciones[0m
+                [36m</th>[39m
+              [36m</tr>[39m
+            [36m</thead>[39m
+            [36m<tbody>[39m
+              [36m<tr>[39m
+                [36m<td>[39m
+                  [0mConsulta General[0m
+                [36m</td>[39m
+                [36m<td>[39m
+                  [0m$[0m
+                  [0m30.00[0m
+                [36m</td>[39m
+                [36m<td>[39m
+                  [36m<div[39m
+                    [33mstyle[39m=[32m"display: flex; align-items: center; gap: 8px;"[39m
+                  [36m>[39m
+                    [36m<button[39m
+                      [33mclass[39m=[32m"btn-view"[39m
+                      [33mstyle[39m=[32m"width: 28px; height: 28px;"[39m
+                      [33mtype[39m=[32m"button"[39m
+                    [36m>[39m
+                      [0m-[0m
+                    [36m</button>[39m
+                    [36m<span[39m
+                      [33mstyle[39m=[32m"font-weight: bold; width: 20px; text-align: center;"[39m
+                    [36m>[39m
+                      [0m1[0m
+                    [36m</span>[39m
+                    [36m<button[39m
+                      [33mclass[39m=[32m"btn-view"[39m
+                      [33mstyle[39m=[32m"width: 28px; height: 28px;"[39m
+                      [33mtype[39m=[32m"button"[39m
+                    [36m>[39m
+                      [0m+[0m
+                    [36m</button>[39m
+                  [36m</div>[39m
+                [36m</td>[39m
+                [36m<td>[39m
+                  [0m$[0m
+                  [0m30.00[0m
+                [36m</td>[39m
+                [36m<td>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"status-badge active"[39m
+                  [36m>[39m
+                    [0mExento[0m
+                  [36m</span>[39m
+                [36m</td>[39m
+                [36m<td>[39m
+                  [0m$[0m
+                  [0m30.00[0m
+                [36m</td>[39m
+                [36m<td>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"btn-delete"[39m
+                    [33mtitle[39m=[32m"Eliminar"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [0m≡ƒùæ∩╕Å[0m
+                  [36m</button>[39m
+                [36m</td>[39m
+              [36m</tr>[39m
+            [36m</tbody>[39m
+          [36m</table>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"totals-panel glassmorphism"[39m
+          [33mstyle[39m=[32m"margin-top: 20px; padding: 20px; border-radius: 12px; background: var(--bg-secondary); 
+border: 1px solid var(--border-color);"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mstyle[39m=[32m"display: grid; grid-template-columns: 1fr 1fr; gap: 30px;"[39m
+          [36m>[39m
+            [36m<div>[39m
+              [36m<h4[39m
+                [33mstyle[39m=[32m"margin-bottom: 15px;"[39m
+              [36m>[39m
+                [0mResumen en USD[0m
+              [36m</h4>[39m
+              [36m<div[39m
+                [33mstyle[39m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px;"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0mSubtotal:[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m$[0m
+                  [0m30.00[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mstyle[39m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px;"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0mIVA (16%):[0m
+                [36m</span>[39m
+                [36m<span>[39m
+                  [0m$[0m
+                  [0m0.00[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mstyle[39m=[32m"display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 
+700; font-size: 1.1rem;"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0mTotal USD:[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"text-cyan"[39m
+                [36m>[39m
+                  [0m$[0m
+                  [0m0.00[0m
+                [36m</span>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div>[39m
+              [36m<h4[39m
+                [33mstyle[39m=[32m"margin-bottom: 15px;"[39m
+              [36m>[39m
+                [0mTotal en VES[0m
+              [36m</h4>[39m
+              [36m<div[39m
+                [33mstyle[39m=[32m"display: flex; justify-content: space-between; font-weight: 700; font-size: 
+1.3rem;"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0mTotal:[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"text-cyan"[39m
+                [36m>[39m
+                  [0mBs. [0m
+                  [0m0.00[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mstyle[39m=[32m"font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;"[39m
+              [36m>[39m
+                [0mTasa: [0m
+                [0m36[0m
+                [0m VES/USD[0m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mstyle[39m=[32m"margin-top: 20px; padding-top: 20px; border-top: 1px dashed 
+var(--border-color);"[39m
+          [36m>[39m
+            [36m<h4[39m
+              [33mstyle[39m=[32m"margin-bottom: 15px;"[39m
+            [36m>[39m
+              [0mInformaci├│n de Pago[0m
+            [36m</h4>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"patient-form-grid"[39m
+              [33mstyle[39m=[32m"margin-top: 0px;"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"form-group"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mfor[39m=[32m"metodo-pago-select"[39m
+                [36m>[39m
+                  [0mM├⌐todo de Pago *[0m
+                [36m</label>[39m
+                [36m<select[39m
+                  [33mid[39m=[32m"metodo-pago-select"[39m
+                [36m>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m"EFECTIVO_USD"[39m
+                  [36m>[39m
+                    [0m≡ƒÆ╡ Efectivo USD[0m
+                  [36m</option>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m"TRANSFERENCIA"[39m
+                  [36m>[39m
+                    [0m≡ƒÅª Transferencia Bancaria[0m
+                  [36m</option>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m"PAGO_MOVIL"[39m
+                  [36m>[39m
+                    [0m≡ƒô▒ Pago M├│vil[0m
+                  [36m</option>[39m
+                [36m</select>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"form-group"[39m
+              [36m>[39m
+                [36m<label>[39m
+                  [0m├Ültimos 4 D├¡gitos de Referencia *[0m
+                [36m</label>[39m
+                [36m<input[39m
+                  [33mplaceholder[39m=[32m"Ej: 1234"[39m
+                  [33mtype[39m=[32m"text"[39m
+                  [33mvalue[39m=[32m"12"[39m
+                [36m/>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"form-actions"[39m
+          [33mstyle[39m=[32m"margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"btn-primary"[39m
+          [36m>[39m
+            [0m≡ƒÆ╛ Procesar Factura[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+[90m [2mΓ¥»[22m Proxy.waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[36m [2mΓ¥»[22m src/components/Billing/InvoiceForm.test.jsx:[2m143:11[22m[39m
+    [90m141| [39m    })[33m;[39m
+    [90m142| [39m
+    [90m143| [39m    [35mawait[39m [34mwaitFor[39m(() [33m=>[39m {
+    [90m   | [39m          [31m^[39m
+    [90m144| [39m      [34mexpect[39m(screen[33m.[39m[34mgetByText[39m([36m/debe ingresar exactamente los 
+├║ltimos 4[39mΓÇª
+    [90m145| [39m    })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/1]ΓÄ»[22m[39m
+
+[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1m[7m Unhandled Errors [27m[22mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[39m
+[31m[1m
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+
+[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»[1m[7m Unhandled Rejection [27m[22mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[39m
+[31m[1mReferenceError[22m: exchangeRateVal is not defined[39m
+[36m [2mΓ¥»[22m handleProcessInvoice src/components/Billing/InvoiceForm.jsx:[2m130:5[22m[39m
+    [90m128| [39m      [35mreturn[39m[33m;[39m
+    [90m129| [39m    }
+    [90m130| [39m    [35mif[39m ([33m![39mexchangeRateVal [33m||[39m [34misNaN[39m(exchangeRateVal) 
+[33m||[39m exchangeRateVal ΓÇª
+    [90m   | [39m    [31m^[39m
+    [90m131| [39m      [34msetValidationError[39m([32m'Ingrese una tasa de cambio v├ílida mayor a ce[39mΓÇª
+    [90m132| [39m      [35mreturn[39m[33m;[39m
+[90m [2mΓ¥»[22m executeDispatch node_modules/react-dom/cjs/react-dom-client.development.js:[2m19116:9[22m[39m
+[90m [2mΓ¥»[22m runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:[2m874:13[22m[39m
+[90m [2mΓ¥»[22m processDispatchQueue 
+node_modules/react-dom/cjs/react-dom-client.development.js:[2m19166:19[22m[39m
+[90m [2mΓ¥»[22m node_modules/react-dom/cjs/react-dom-client.development.js:[2m19767:9[22m[39m
+[90m [2mΓ¥»[22m batchedUpdates$1 node_modules/react-dom/cjs/react-dom-client.development.js:[2m3255:40[22m[39m
+[90m [2mΓ¥»[22m dispatchEventForPluginEventSystem 
+node_modules/react-dom/cjs/react-dom-client.development.js:[2m19320:7[22m[39m
+[90m [2mΓ¥»[22m dispatchEvent node_modules/react-dom/cjs/react-dom-client.development.js:[2m23585:11[22m[39m
+[90m [2mΓ¥»[22m dispatchDiscreteEvent 
+node_modules/react-dom/cjs/react-dom-client.development.js:[2m23553:11[22m[39m
+[90m [2mΓ¥»[22m HTMLDivElement.callTheUserObjectsOperation 
+node_modules/jsdom/lib/generated/idl/EventListener.js:[2m26:30[22m[39m
+
+[31mThis error originated in "[1msrc/components/Billing/InvoiceForm.test.jsx[22m" test file. It doesn't mean the 
+error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mdebe validar que los d├¡gitos sean 4 en pagos 
+electr├│nicos[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+
+[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[39m
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (6)[39m
+[2m     Errors [22m [1m[31m1 error[39m[22m
+[2m   Start at [22m 13:29:45
+[2m   Duration [22m 6.18s[2m (transform 367ms, setup 330ms, collect 511ms, tests 1.75s, environment 2.74s, prepare 269ms)[22m
+

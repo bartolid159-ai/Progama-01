@@ -1,6 +1,6 @@
 /** @vitest-environment node */
 import { describe, it, expect, beforeEach, afterAll, vi } from 'vitest';
-import { getDb, closeDb, processInvoice, getFacturaById, getFacturaDetalles } from '../../src/db/manager.js';
+import { getDb, closeDb, processInvoice, getFacturaById, getFacturaDetalles, getAllFacturas } from '../../src/db/manager.js';
 import { insertPaciente, insertMedico, insertServicio, insertInsumo, setServicioInsumos, insertCategoria } from '../../src/db/manager.js';
 
 describe('processInvoice - Persistencia ACID', () => {
@@ -185,5 +185,68 @@ describe('processInvoice - Persistencia ACID', () => {
     const detalles = getFacturaDetalles(result.facturaId);
     expect(detalles[0].iva_porcentaje).toBe(16);
     expect(detalles[0].precio_unitario_usd).toBe(50);
+  });
+
+  test('debe guardar y recuperar el método de pago y detalle de la factura', () => {
+    // Insertar datos necesarios para FK
+    const p = insertPaciente({
+      cedula_rif: 'V-PAY-TEST', nombre: 'Test Pago', sexo: 'M',
+      fecha_nacimiento: '1990-01-01', telefono: '123', correo: 'a@a.com', direccion: 'x'
+    });
+    const m = insertMedico({
+      nombre: 'Dr. Pago', cedula_rif: 'V-DOC-PAY', telefono: '456',
+      correo: 'd@d.com', especialidad: 'X', porcentaje_comision: 10
+    });
+    const s = insertServicio({
+      nombre: 'Svc Pago', precio_usd: 100, es_exento: 1, id_medico_defecto: m.lastInsertRowid
+    });
+
+    const invoiceData = {
+      id_paciente: p.lastInsertRowid,
+      id_medico: m.lastInsertRowid,
+      tasa_cambio: 36,
+      items: [{ id_servicio: s.lastInsertRowid, cantidad: 1, precio_usd: 100, es_exento: true }],
+      totals: { subtotal_usd: 100, iva_usd: 0, total_usd: 100, total_ves: 3600 },
+      commission: 10,
+      requiredInsumos: [],
+      metodo_pago: 'TRANSFERENCIA',
+      detalle_pago: '9999'
+    };
+
+    const result = processInvoice(invoiceData);
+    expect(result.success).toBe(true);
+
+    const facturas = getAllFacturas();
+    const guardada = facturas.find(f => f.id === result.facturaId);
+    
+    expect(guardada.metodo_pago).toBe('TRANSFERENCIA');
+    expect(guardada.detalle_pago).toBe('9999');
+  });
+
+  test('debe usar EFECTIVO_USD por defecto si no se especifica el método', () => {
+    const p = insertPaciente({
+      cedula_rif: 'V-DEF-TEST', nombre: 'Test Default', sexo: 'M',
+      fecha_nacimiento: '1990-01-01', telefono: '123', correo: 'b@b.com', direccion: 'x'
+    });
+    const m = insertMedico({
+      nombre: 'Dr. Default', cedula_rif: 'V-DOC-DEF', telefono: '456',
+      correo: 'e@e.com', especialidad: 'X', porcentaje_comision: 10
+    });
+
+    const invoiceData = {
+      id_paciente: p.lastInsertRowid,
+      id_medico: m.lastInsertRowid,
+      tasa_cambio: 36,
+      items: [],
+      totals: { subtotal_usd: 0, iva_usd: 0, total_usd: 0, total_ves: 0 },
+      commission: 0,
+      requiredInsumos: []
+    };
+
+    const result = processInvoice(invoiceData);
+    const facturas = getAllFacturas();
+    const guardada = facturas.find(f => f.id === (result.facturaId || result.id_factura));
+    
+    expect(guardada.metodo_pago).toBe('EFECTIVO_USD');
   });
 });

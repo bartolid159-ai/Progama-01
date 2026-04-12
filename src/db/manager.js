@@ -390,7 +390,14 @@ export const processInvoice = (invoiceData) => {
     // Basic fallback for browser (unchanged for now or minimal updates)
     const invoices = JSON.parse(localStorage.getItem(INVOICES_KEY) || '[]');
     const facturaId = invoices.length > 0 ? Math.max(...invoices.map(i => i.id)) + 1 : 1;
-    const newInvoice = { ...invoiceData, id: facturaId, fecha: new Date().toISOString(), estatus: 'PAGADA' };
+    const newInvoice = { 
+      ...invoiceData, 
+      id: facturaId, 
+      fecha: new Date().toISOString(), 
+      estatus: 'PAGADA',
+      metodo_pago: invoiceData.metodo_pago || 'EFECTIVO_USD',
+      detalle_pago: invoiceData.detalle_pago || ''
+    };
     invoices.push(newInvoice);
     localStorage.setItem(INVOICES_KEY, JSON.stringify(invoices));
     return { success: true, facturaId, message: 'Factura procesada (Navegador)' };
@@ -403,12 +410,14 @@ export const processInvoice = (invoiceData) => {
 
     // 1. Factura
     const facturaId = db.prepare(`
-      INSERT INTO facturas (id_paciente, id_medico, tasa_cambio, total_usd, total_ves, estatus)
-      VALUES (@id_paciente, @id_medico, @tasa_cambio, @total_usd, @total_ves, 'PAGADA')
+      INSERT INTO facturas (id_paciente, id_medico, tasa_cambio, total_usd, total_ves, estatus, metodo_pago, detalle_pago)
+      VALUES (@id_paciente, @id_medico, @tasa_cambio, @total_usd, @total_ves, 'PAGADA', @metodo_pago, @detalle_pago)
     `).run({
       id_paciente, id_medico, tasa_cambio,
       total_usd: round2(totals.total_usd),
-      total_ves: round2(totals.total_ves)
+      total_ves: round2(totals.total_ves),
+      metodo_pago: invoiceData.metodo_pago || 'EFECTIVO_USD',
+      detalle_pago: invoiceData.detalle_pago || ''
     }).lastInsertRowid;
 
     // 2. Detalles
@@ -532,7 +541,9 @@ export const getAllFacturas = () => {
         paciente_telefono: patient ? patient.telefono : '—',
         medico_nombre: doctor ? doctor.nombre : '—',
         total_usd: inv.totals?.total_usd || 0,
-        total_ves: inv.totals?.total_ves || 0
+        total_ves: inv.totals?.total_ves || 0,
+        metodo_pago: inv.metodo_pago || 'EFECTIVO_USD',
+        detalle_pago: inv.detalle_pago || ''
       };
     }).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
   }
@@ -578,6 +589,56 @@ export const searchFacturas = (query) => {
     ORDER BY f.fecha DESC
   `);
   return stmt.all(searchTerm, searchTerm, searchTerm, searchTerm);
+};
+
+
+/**
+ * Obtiene el monto total teórico del día desde los asientos contables.
+ * @param {string} fecha - Fecha en formato YYYY-MM-DD
+ * @returns {number} Total USD
+ */
+export const getTeoricoCaja = (fecha) => {
+  if (isBrowser) {
+    const invoices = JSON.parse(localStorage.getItem(INVOICES_KEY) || '[]');
+    const targetDate = fecha || new Date().toISOString().split('T')[0];
+    return invoices
+      .filter(inv => inv.fecha.startsWith(targetDate))
+      .reduce((acc, inv) => acc + (inv.totals?.total_usd || 0), 0);
+  }
+
+  const db = getDb();
+  const dateStr = fecha || new Date().toISOString().split('T')[0];
+  const stmt = db.prepare(`
+    SELECT SUM(debe_usd) AS total 
+    FROM contabilidad_asientos 
+    WHERE tipo = 'INGRESO' AND date(fecha) = date (?)
+  `);
+  const result = stmt.get(dateStr);
+  return result ? (result.total || 0) : 0;
+};
+
+/**
+ * Guarda el registro del cierre de caja en la base de datos.
+ * @param {Object} data - Datos del cierre
+ * @returns {Object} Resultado de la operación
+ */
+export const guardarCierreCaja = (data) => {
+  if (isBrowser) {
+    const cierres = JSON.parse(localStorage.getItem('clinica_cierres_db') || '[]');
+    cierres.push({ ...data, id: cierres.length + 1, creado_en: new Date().toISOString() });
+    localStorage.setItem('clinica_cierres_db', JSON.stringify(cierres));
+    return { success: true };
+  }
+
+  const db = getDb();
+  const stmt = db.prepare(`
+    INSERT INTO cierres_caja (fecha, declarado_usd, teorico_usd, diferencia_usd, estado)
+    VALUES (@fecha, @declarado_usd, @teorico_usd, @diferencia_usd, @estado)
+  `);
+  return stmt.run({
+    ...data,
+    fecha: data.fecha || new Date().toISOString().split('T')[0]
+  });
 };
 
 
