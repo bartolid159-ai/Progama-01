@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.6.0...v1.7.0) (2026-04-12)
+
+
+### Features
+
+* Cierre de Caja Ciego y Sistema de Backups (Tarea 08) ([f1a5c94](https://github.com/bartolid159-ai/Progama-01/commit/f1a5c940af3447b3cca0e14b7612129d9cddff86))
+* implementar cierre de caja ciego, backups automáticos y refinamiento visual premium ([773dd08](https://github.com/bartolid159-ai/Progama-01/commit/773dd08ffea233e6ebd3fa39657467118b0f1f03))
+
 ## [1.6.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.5.0...v1.6.0) (2026-04-12)
 
 
