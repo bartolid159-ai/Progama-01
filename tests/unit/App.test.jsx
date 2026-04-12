@@ -11,7 +11,7 @@ describe('App Component - Tarea 01', () => {
     // Dashboard aparece en el sidebar y en el header, usamos getAll y verificamos que existan
     const dashboardElements = screen.getAllByText(/Dashboard/i);
     expect(dashboardElements.length).toBeGreaterThan(0);
-    expect(screen.getByText(/Ganancia Neta/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ingresos Mensuales/i)).toBeInTheDocument();
   });
 
   it('debe iniciar en Modo Oscuro por defecto (sin la clase light-mode)', () => {

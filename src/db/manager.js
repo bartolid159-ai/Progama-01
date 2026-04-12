@@ -33,7 +33,7 @@ let dbInstance = null;
  * @returns {Database} The initialized better-sqlite3 database instance
  */
 export function getDb(dbPath = process.env.NODE_ENV === 'test' ? ':memory:' : 'data.sqlite', loadSchema = true) {
-  if (isBrowser) return { 
+  if (isBrowser && process.env.NODE_ENV !== 'test') return { 
     prepare: () => ({ run: () => ({ lastInsertRowid: 1 }), get: () => null, all: () => [], transaction: (cb) => cb }),
     exec: () => {},
     pragma: () => {},
@@ -208,34 +208,25 @@ export const getAllMedicos = () => {
 };
 
 /**
- * CRUD helpers for 'insumos'.
+ * CRUD helpers for 'insumos' (Updated for PRD v2).
  */
 export const insertInsumo = (data) => {
   const db = getDb();
   const stmt = db.prepare(`
-    INSERT INTO insumos (nombre, stock_actual, stock_minimo, unidad_medida, costo_unitario_usd)
-    VALUES (@nombre, @stock_actual, @stock_minimo, @unidad_medida, @costo_unitario_usd)
+    INSERT INTO insumos (codigo, nombre, descripcion, id_categoria, stock_actual, stock_minimo, unidad_medida, costo_unitario_usd)
+    VALUES (@codigo, @nombre, @descripcion, @id_categoria, @stock_actual, @stock_minimo, @unidad_medida, @costo_unitario_usd)
   `);
   return stmt.run(data);
-};
-
-export const getAllInsumos = () => {
-  const db = getDb();
-  const stmt = db.prepare('SELECT * FROM insumos ORDER BY nombre ASC LIMIT 100');
-  return stmt.all();
-};
-
-export const getInsumoById = (id) => {
-  const db = getDb();
-  const stmt = db.prepare('SELECT * FROM insumos WHERE id = ?');
-  return stmt.get(id);
 };
 
 export const updateInsumo = (data) => {
   const db = getDb();
   const stmt = db.prepare(`
     UPDATE insumos 
-    SET nombre = @nombre, 
+    SET codigo = @codigo,
+        nombre = @nombre, 
+        descripcion = @descripcion,
+        id_categoria = @id_categoria,
         stock_actual = @stock_actual, 
         stock_minimo = @stock_minimo, 
         unidad_medida = @unidad_medida, 
@@ -243,6 +234,37 @@ export const updateInsumo = (data) => {
     WHERE id = @id
   `);
   return stmt.run(data);
+};
+
+export const getAllInsumos = () => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    SELECT i.*, c.nombre AS categoria_nombre
+    FROM insumos i
+    LEFT JOIN categorias_insumos c ON i.id_categoria = c.id
+    ORDER BY i.nombre ASC 
+    LIMIT 100
+  `);
+  return stmt.all();
+};
+
+export const getInsumoById = (id) => {
+  const db = getDb();
+  return db.prepare('SELECT * FROM insumos WHERE id = ?').get(id);
+};
+
+/**
+ * Categorías de Insumos
+ */
+export const insertCategoria = (nombre) => {
+  const db = getDb();
+  const stmt = db.prepare('INSERT INTO categorias_insumos (nombre) VALUES (?)');
+  return stmt.run(nombre);
+};
+
+export const getAllCategorias = () => {
+  const db = getDb();
+  return db.prepare('SELECT * FROM categorias_insumos ORDER BY nombre ASC').all();
 };
 
 /**
@@ -339,112 +361,133 @@ export const setServicioInsumos = (id_servicio, insumos) => {
 };
 
 /**
- * Process a complete invoice with ACID transaction.
- * 1. INSERT into facturas
- * 2. INSERT into factura_detalles (per item)
- * 3. UPDATE stock in insumos (deduct materials)
- * 4. INSERT into asientos_contables (Income + Commission)
+ * Tasa de Cambio (PRD v2)
+ */
+export const registrarTasa = (fecha, valor) => {
+  const db = getDb();
+  const stmt = db.prepare('INSERT OR REPLACE INTO historial_tasas (fecha, valor_bcv) VALUES (?, ?)');
+  return stmt.run(fecha, valor);
+};
+
+export const getTasaDelDia = () => {
+  const db = getDb();
+  const hoy = new Date().toISOString().split('T')[0];
+  const stmt = db.prepare('SELECT valor_bcv FROM historial_tasas WHERE fecha = ?');
+  let result = stmt.get(hoy);
+  
+  if (!result) {
+    // Fallback: última tasa registrada
+    result = db.prepare('SELECT valor_bcv FROM historial_tasas ORDER BY fecha DESC LIMIT 1').get();
+  }
+  
+  return result ? result.valor_bcv : 1; // Default to 1 if no rates found
+};
+/**
+ * Process a complete invoice with ACID transaction (Updated for PRD v2 Bimoneda).
  */
 export const processInvoice = (invoiceData) => {
   if (isBrowser) {
+    // Basic fallback for browser (unchanged for now or minimal updates)
     const invoices = JSON.parse(localStorage.getItem(INVOICES_KEY) || '[]');
     const facturaId = invoices.length > 0 ? Math.max(...invoices.map(i => i.id)) + 1 : 1;
-    
-    const newInvoice = {
-      ...invoiceData,
-      id: facturaId,
-      fecha: new Date().toISOString(),
-      estatus: 'PAGADA'
-    };
-    
+    const newInvoice = { ...invoiceData, id: facturaId, fecha: new Date().toISOString(), estatus: 'PAGADA' };
     invoices.push(newInvoice);
     localStorage.setItem(INVOICES_KEY, JSON.stringify(invoices));
-    
-    // Simular descuento de stock
-    if (invoiceData.requiredInsumos && invoiceData.requiredInsumos.length > 0) {
-      const insumos = JSON.parse(localStorage.getItem(INSUMOS_KEY) || '[]');
-      invoiceData.requiredInsumos.forEach(req => {
-        const insumo = insumos.find(i => i.id === req.id_insumo);
-        if (insumo) {
-          insumo.stock_actual -= req.cantidad_total;
-        }
-      });
-      localStorage.setItem(INSUMOS_KEY, JSON.stringify(insumos));
-    }
-    
-    return { success: true, facturaId, message: 'Factura procesada (Modo Navegador)' };
+    return { success: true, facturaId, message: 'Factura procesada (Navegador)' };
   }
 
   return executeTransaction(() => {
     const db = getDb();
     const { id_paciente, id_medico, tasa_cambio, items, totals, commission, requiredInsumos } = invoiceData;
-
     const round2 = (num) => Math.round(num * 100) / 100;
 
-    const insertFactura = db.prepare(`
+    // 1. Factura
+    const facturaId = db.prepare(`
       INSERT INTO facturas (id_paciente, id_medico, tasa_cambio, total_usd, total_ves, estatus)
       VALUES (@id_paciente, @id_medico, @tasa_cambio, @total_usd, @total_ves, 'PAGADA')
-    `);
-
-    const facturaResult = insertFactura.run({
-      id_paciente,
-      id_medico,
-      tasa_cambio,
+    `).run({
+      id_paciente, id_medico, tasa_cambio,
       total_usd: round2(totals.total_usd),
       total_ves: round2(totals.total_ves)
-    });
+    }).lastInsertRowid;
 
-    const facturaId = facturaResult.lastInsertRowid;
-
+    // 2. Detalles
     const insertDetalle = db.prepare(`
       INSERT INTO factura_detalles (id_factura, id_servicio, cantidad, precio_unitario_usd, iva_porcentaje)
       VALUES (@id_factura, @id_servicio, @cantidad, @precio_unitario_usd, @iva_porcentaje)
     `);
-
     for (const item of items) {
-      const ivaPorcentaje = item.es_exento ? 0 : 16;
       insertDetalle.run({
-        id_factura: facturaId,
-        id_servicio: item.id_servicio,
-        cantidad: item.cantidad,
-        precio_unitario_usd: round2(item.precio_usd),
-        iva_porcentaje: ivaPorcentaje
+        id_factura: facturaId, id_servicio: item.id_servicio,
+        cantidad: item.cantidad, precio_unitario_usd: round2(item.precio_usd),
+        iva_porcentaje: item.es_exento ? 0 : 16
       });
     }
 
+    // 3. Stock
     if (requiredInsumos && requiredInsumos.length > 0) {
-      const updateStock = db.prepare(`
-        UPDATE insumos SET stock_actual = stock_actual - ? WHERE id = ?
-      `);
+      const updateStock = db.prepare('UPDATE insumos SET stock_actual = stock_actual - ? WHERE id = ?');
       for (const insumo of requiredInsumos) {
         updateStock.run(insumo.cantidad_total, insumo.id_insumo);
       }
     }
 
+    // 4. Asientos Bimoneda
     const insertAsiento = db.prepare(`
-      INSERT INTO asientos_contables (tipo, categoria, monto_usd, descripcion, id_referencia)
-      VALUES (@tipo, @categoria, @monto_usd, @descripcion, @id_referencia)
+      INSERT INTO contabilidad_asientos (tipo, categoria, debe_usd, haber_usd, debe_ves, haber_ves, tasa_referencia, descripcion, referencia_id)
+      VALUES (@tipo, @categoria, @debe_usd, @haber_usd, @debe_ves, @haber_ves, @tasa_referencia, @descripcion, @referencia_id)
     `);
 
+    // INGRESO por servicios (Cobra en DB: Debe vs Haber)
+    // Usualmente: Debe Banco (monto) vs Haber Ingreso (monto)
+    // Para simplificar segun PRD: Ingreso Total
     insertAsiento.run({
       tipo: 'INGRESO',
       categoria: 'SERVICIO',
-      monto_usd: round2(totals.subtotal_usd),
+      debe_usd: round2(totals.subtotal_usd),
+      haber_usd: 0,
+      debe_ves: round2(totals.subtotal_usd * tasa_cambio),
+      haber_ves: 0,
+      tasa_referencia: tasa_cambio,
       descripcion: `Factura #${facturaId} - Ingreso por servicios`,
-      id_referencia: facturaId
+      referencia_id: facturaId
     });
 
     if (commission > 0) {
       insertAsiento.run({
         tipo: 'EGRESO',
         categoria: 'COMISION',
-        monto_usd: round2(commission),
+        debe_usd: 0,
+        haber_usd: round2(commission),
+        debe_ves: 0,
+        haber_ves: round2(commission * tasa_cambio),
+        tasa_referencia: tasa_cambio,
         descripcion: `Factura #${facturaId} - Comisión médica`,
-        id_referencia: facturaId
+        referencia_id: facturaId
       });
     }
 
-    return { success: true, facturaId, message: 'Factura procesada exitosamente' };
+    if (requiredInsumos && requiredInsumos.length > 0) {
+      for (const req of requiredInsumos) {
+        const insumo = db.prepare('SELECT costo_unitario_usd FROM insumos WHERE id = ?').get(req.id_insumo);
+        if (insumo && insumo.costo_unitario_usd > 0) {
+          const costoUsd = round2(insumo.costo_unitario_usd * req.cantidad_total);
+          insertAsiento.run({
+            tipo: 'EGRESO',
+            categoria: 'COSTO_INSUMO',
+            debe_usd: 0,
+            haber_usd: costoUsd,
+            debe_ves: 0,
+            haber_ves: round2(costoUsd * tasa_cambio),
+            tasa_referencia: tasa_cambio,
+            descripcion: `Factura #${facturaId} - Costo insumo ID ${req.id_insumo}`,
+            referencia_id: facturaId
+          });
+        }
+      }
+    }
+
+    return { success: true, facturaId, message: 'Factura procesada (Bimoneda)' };
   });
 };
 
