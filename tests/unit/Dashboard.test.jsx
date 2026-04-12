@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { Dashboard } from '../../src/components/Dashboard';
+import Dashboard from '../../src/components/Dashboard/Dashboard';
 import FinancialSummary from '../../src/components/Dashboard/FinancialSummary';
 import PatientStats from '../../src/components/Dashboard/PatientStats';
 import ServicePerformance from '../../src/components/Dashboard/ServicePerformance';
@@ -11,53 +11,29 @@ const mockOnShowBanner = vi.fn();
 describe('Dashboard Component - Tarea 07', () => {
   describe('Dashboard Main Component', () => {
     it('debe renderizar el título del dashboard', async () => {
-      render(<Dashboard onShowBanner={mockOnShowBanner} />);
+      render(<Dashboard />);
       
       await waitFor(() => {
-        expect(screen.getByText('Panel de Control')).toBeDefined();
+        expect(screen.getByText('Panel de Inteligencia de Negocio')).toBeDefined();
       }, { timeout: 2000 });
     });
 
     it('debe mostrar el subtítulo del dashboard', async () => {
-      render(<Dashboard onShowBanner={mockOnShowBanner} />);
+      render(<Dashboard />);
       
       await waitFor(() => {
-        expect(screen.getByText('Resumen ejecutivo y métricas clave')).toBeDefined();
-      }, { timeout: 2000 });
-    });
-
-    it('debe mostrar el botón de exportar', async () => {
-      render(<Dashboard onShowBanner={mockOnShowBanner} />);
-      
-      await waitFor(() => {
-        const exportButton = screen.getByText('Exportar');
-        expect(exportButton).toBeDefined();
+        expect(screen.getByText(/Control bimoneda y métricas operativas/i)).toBeDefined();
       }, { timeout: 2000 });
     });
 
     it('debe mostrar las métricas principales del dashboard', async () => {
-      render(<Dashboard onShowBanner={mockOnShowBanner} />);
+      render(<Dashboard />);
       
       await waitFor(() => {
-        expect(screen.getByText('Ingresos Mensuales')).toBeDefined();
-        expect(screen.getByText('Pacientes Activos')).toBeDefined();
-        expect(screen.getByText('Tasa de Ocupación')).toBeDefined();
-        expect(screen.getByText('Meta Mensual')).toBeDefined();
+        expect(screen.getByText('Total Ingresos')).toBeDefined();
+        expect(screen.getByText('Total Egresos')).toBeDefined();
+        expect(screen.getByText('Ganancia Neta (Hoy)')).toBeDefined();
       }, { timeout: 2000 });
-    });
-
-    it('debe llamar a onShowBanner al hacer clic en exportar', async () => {
-      render(<Dashboard onShowBanner={mockOnShowBanner} />);
-      
-      await waitFor(() => {
-        const exportButton = screen.getByText('Exportar');
-        fireEvent.click(exportButton);
-      }, { timeout: 2000 });
-
-      expect(mockOnShowBanner).toHaveBeenCalledWith(
-        'Exportando reporte: reporte_completo',
-        'success'
-      );
     });
   });
 
