@@ -7,7 +7,11 @@ import ServiceList from './components/Services/ServiceList';
 import ServiceForm from './components/Services/ServiceForm';
 import InvoiceForm from './components/Billing/InvoiceForm';
 import InvoiceHistory from './components/Billing/InvoiceHistory';
+import KpiPanel from './components/Dashboard/KpiPanel';
+import StockAlertWidget from './components/Dashboard/StockAlertWidget';
+import RevenueChart from './components/Dashboard/RevenueChart';
 import Banner from './components/Common/Banner';
+import Dashboard from './components/Dashboard/Dashboard';
 
 function App() {
   const [theme, setTheme] = useState('dark');
@@ -94,6 +98,10 @@ function App() {
 
   const closeBanner = () => setBanner({ ...banner, message: '' });
 
+  const handleShowBanner = (message, type = 'success') => {
+    setBanner({ message, type });
+  };
+
   const getPageTitle = () => {
     switch (activeView) {
       case 'dashboard': return 'Dashboard';
@@ -117,6 +125,7 @@ function App() {
           <li className={activeView === 'doctors' ? 'active' : ''} onClick={() => setActiveView('doctors')}>Médicos</li>
           <li className={activeView === 'services' ? 'active' : ''} onClick={() => setActiveView('services')}>Servicios</li>
           <li className={activeView === 'billing' ? 'active' : ''} onClick={() => { setActiveView('billing'); setBillingSubView('form'); }}>Facturación</li>
+          <li className={activeView === 'reports' ? 'active' : ''} onClick={() => setActiveView('reports')}>Reportes</li>
           <li>Inventario</li>
           <li>Liquidación</li>
         </ul>
@@ -159,20 +168,7 @@ function App() {
         {banner.message && <Banner message={banner.message} type={banner.type} onClose={closeBanner} />}
         
         {activeView === 'dashboard' && (
-          <div className="dashboard-grid fade-in">
-            <div className="kpi-card glassmorphism">
-              <h3>Ganancia Neta (Hoy)</h3>
-              <p className="amount text-cyan">$850.00</p>
-            </div>
-            <div className="kpi-card glassmorphism">
-              <h3>Consultas Atendidas</h3>
-              <p className="amount">24</p>
-            </div>
-            <div className="kpi-card glassmorphism alert">
-              <h3>Alerta de Stock</h3>
-              <p className="amount text-red">3 Mínimos</p>
-            </div>
-          </div>
+          <Dashboard onShowBanner={handleShowBanner} />
         )}
 
         {activeView === 'patients' && (

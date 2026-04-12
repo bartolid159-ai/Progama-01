@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import App from './App';
 
 vi.mock('./logic/patientService', () => ({
@@ -22,21 +22,25 @@ vi.mock('./logic/billingEngine', () => ({
 }));
 
 describe('App - Billing Integration', () => {
-  it('debe mostrar la vista de facturación al hacer clic en Facturación', () => {
+  it('debe mostrar la vista de facturación al hacer clic en Facturación', async () => {
     render(<App />);
     
     const billingLink = screen.getByText('Facturación');
-    fireEvent.click(billingLink);
+    await act(async () => {
+      fireEvent.click(billingLink);
+    });
     
     expect(screen.getByText('Paciente *')).toBeDefined();
     expect(screen.getByText('Médico Tratante *')).toBeDefined();
   });
 
-  it('debe cambiar el título al navegar a facturación', () => {
+  it('debe cambiar el título al navegar a facturación', async () => {
     render(<App />);
     
     const billingLink = screen.getByText('Facturación');
-    fireEvent.click(billingLink);
+    await act(async () => {
+      fireEvent.click(billingLink);
+    });
     
     const headers = screen.getAllByText('Facturación');
     expect(headers.length).toBe(2);

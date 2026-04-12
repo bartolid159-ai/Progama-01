@@ -32,14 +32,24 @@ CREATE TABLE IF NOT EXISTS medicos (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Inventario de Insumos
+-- Categorías de Insumos
+CREATE TABLE IF NOT EXISTS categorias_insumos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT UNIQUE NOT NULL
+);
+
+-- Inventario de Insumos (Actualizado PRD v2)
 CREATE TABLE IF NOT EXISTS insumos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  codigo TEXT UNIQUE,
   nombre TEXT,
+  descripcion TEXT,
+  id_categoria INTEGER,
   stock_actual INTEGER DEFAULT 0,
   stock_minimo INTEGER DEFAULT 0,
   unidad_medida TEXT,
-  costo_unitario_usd REAL DEFAULT 0.0
+  costo_unitario_usd REAL DEFAULT 0.0,
+  FOREIGN KEY(id_categoria) REFERENCES categorias_insumos(id)
 );
 
 -- Catálogo de Servicios
@@ -87,15 +97,25 @@ CREATE TABLE IF NOT EXISTS factura_detalles (
   FOREIGN KEY(id_servicio) REFERENCES servicios(id)
 );
 
--- Contabilidad y Flujo 
-CREATE TABLE IF NOT EXISTS asientos_contables (
+-- Historial de Tasas (PRD v2)
+CREATE TABLE IF NOT EXISTS historial_tasas (
+  fecha DATE PRIMARY KEY,
+  valor_bcv DECIMAL NOT NULL
+);
+
+-- Contabilidad y Flujo Bimoneda (PRD v2)
+CREATE TABLE IF NOT EXISTS contabilidad_asientos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  tipo TEXT, -- INGRESO, EGRESO
-  categoria TEXT, -- SERVICIO, INSUMO, COMISION, GASTO_OPERATIVO
-  monto_usd REAL,
-  descripcion TEXT,
   fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-  id_referencia INTEGER
+  tasa_referencia DECIMAL,
+  referencia_id INTEGER,
+  tipo TEXT, -- INGRESO, EGRESO
+  categoria TEXT, -- SERVICIO, COSTO_INSUMO, COMISION, GASTO_OPERATIVO
+  debe_usd DECIMAL DEFAULT 0.0,
+  haber_usd DECIMAL DEFAULT 0.0,
+  debe_ves DECIMAL DEFAULT 0.0,
+  haber_ves DECIMAL DEFAULT 0.0,
+  descripcion TEXT
 );
 
 -- Cierres de caja diarios
