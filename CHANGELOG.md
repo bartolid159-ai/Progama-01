@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.7.0...v1.8.0) (2026-04-13)
+
+
+### Features
+
+* agregar lógica de insumos y módulo de gestión de inventario ([8339f5f](https://github.com/bartolid159-ai/Progama-01/commit/8339f5ff35637b9efda85d6095b485dbd1278dd8))
+
+
+### Bug Fixes
+
+* corregir descuento de stock en facturas y asignación de insumos a servicios ([4e7f7bd](https://github.com/bartolid159-ai/Progama-01/commit/4e7f7bd45bcbd48c4b33a04f533086e1ef504267))
+
 ## [1.7.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.6.0...v1.7.0) (2026-04-12)
 
 
