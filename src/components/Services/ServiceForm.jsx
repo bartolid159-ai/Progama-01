@@ -71,14 +71,15 @@ const ServiceForm = ({ onSave, onCancel, service = null }) => {
     const payload = {
       ...formData,
       precio_usd: Number(formData.precio_usd),
-      id_medico_defecto: formData.id_medico_defecto ? Number(formData.id_medico_defecto) : null
+      id_medico_defecto: formData.id_medico_defecto ? Number(formData.id_medico_defecto) : null,
+      insumos: insumosList
     };
 
     let result;
     if (service && service.id) {
-      result = await serviceLogic.updateService({ ...payload, id: service.id }, insumosList);
+      result = await serviceLogic.updateService({ ...payload, id: service.id });
     } else {
-      result = await serviceLogic.registerService(payload, insumosList);
+      result = await serviceLogic.registerService(payload);
     }
 
     if (result.success) {

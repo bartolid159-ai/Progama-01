@@ -78,9 +78,9 @@ describe('Services UI - Functional Button Tests', () => {
       expect(serviceLogic.registerService).toHaveBeenCalledWith(
         expect.objectContaining({
           nombre: 'Nueva Consulta',
-          precio_usd: 55.5
-        }),
-        expect.any(Array)
+          precio_usd: 55.5,
+          insumos: expect.any(Array)
+        })
       );
       expect(onSave).toHaveBeenCalledWith('OK');
     });
