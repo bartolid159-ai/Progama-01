@@ -16,7 +16,7 @@ if (!isBrowser) {
 const INVOICES_KEY = 'clinica_facturas_db';
 const PATIENTS_KEY = 'clinica_patients_db';
 const DOCTORS_KEY = 'clinica_doctors_db';
-const INSUMOS_KEY = 'clinica_insumos_db';
+const INSUMOS_KEY = 'clinica_insumos';
 
 
 
@@ -211,6 +211,9 @@ export const getAllMedicos = () => {
  * CRUD helpers for 'insumos' (Updated for PRD v2).
  */
 export const insertInsumo = (data) => {
+  if (data.stock_actual < 0 || data.costo_unitario_usd < 0 || data.stock_minimo < 0) {
+    throw new Error('Valores de stock y costo no pueden ser negativos');
+  }
   const db = getDb();
   const stmt = db.prepare(`
     INSERT INTO insumos (codigo, nombre, descripcion, id_categoria, stock_actual, stock_minimo, unidad_medida, costo_unitario_usd)
@@ -220,6 +223,9 @@ export const insertInsumo = (data) => {
 };
 
 export const updateInsumo = (data) => {
+  if (data.stock_actual < 0 || data.costo_unitario_usd < 0 || data.stock_minimo < 0) {
+    throw new Error('Valores de stock y costo no pueden ser negativos');
+  }
   const db = getDb();
   const stmt = db.prepare(`
     UPDATE insumos 
@@ -251,6 +257,69 @@ export const getAllInsumos = () => {
 export const getInsumoById = (id) => {
   const db = getDb();
   return db.prepare('SELECT * FROM insumos WHERE id = ?').get(id);
+};
+
+export const deleteInsumo = (id) => {
+  const db = getDb();
+  return db.prepare('DELETE FROM insumos WHERE id = ?').run(id);
+};
+
+export const searchInsumos = (query, idCategoria = null) => {
+  const db = getDb();
+  if (!query && !idCategoria) return getAllInsumos();
+  
+  const target = query ? `%${query}%` : '%';
+  let sql = `
+    SELECT i.*, c.nombre AS categoria_nombre
+    FROM insumos i
+    LEFT JOIN categorias_insumos c ON i.id_categoria = c.id
+    WHERE (i.nombre LIKE ? OR i.codigo LIKE ?)
+  `;
+  const params = [target, target];
+  
+  if (idCategoria) {
+    sql += ' AND i.id_categoria = ?';
+    params.push(idCategoria);
+  }
+  
+  sql += ' ORDER BY i.nombre ASC LIMIT 100';
+  return db.prepare(sql).all(...params);
+};
+
+export const getInsumosByCategoria = (idCategoria) => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    SELECT i.*, c.nombre AS categoria_nombre
+    FROM insumos i
+    LEFT JOIN categorias_insumos c ON i.id_categoria = c.id
+    WHERE i.id_categoria = ?
+    ORDER BY i.nombre ASC
+  `);
+  return stmt.all(idCategoria);
+};
+
+export const getInsumosConStockBajo = () => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    SELECT i.*, c.nombre AS categoria_nombre
+    FROM insumos i
+    LEFT JOIN categorias_insumos c ON i.id_categoria = c.id
+    WHERE i.stock_actual <= i.stock_minimo
+    ORDER BY i.stock_actual ASC
+  `);
+  return stmt.all();
+};
+
+export const deleteCategoria = (id) => {
+  const db = getDb();
+  const stmt = db.prepare('DELETE FROM categorias_insumos WHERE id = ?');
+  return stmt.run(id);
+};
+
+export const updateCategoria = (data) => {
+  const db = getDb();
+  const stmt = db.prepare('UPDATE categorias_insumos SET nombre = @nombre WHERE id = @id');
+  return stmt.run(data);
 };
 
 /**
@@ -387,7 +456,6 @@ export const getTasaDelDia = () => {
  */
 export const processInvoice = (invoiceData) => {
   if (isBrowser) {
-    // Basic fallback for browser (unchanged for now or minimal updates)
     const invoices = JSON.parse(localStorage.getItem(INVOICES_KEY) || '[]');
     const facturaId = invoices.length > 0 ? Math.max(...invoices.map(i => i.id)) + 1 : 1;
     const newInvoice = { 
@@ -400,6 +468,20 @@ export const processInvoice = (invoiceData) => {
     };
     invoices.push(newInvoice);
     localStorage.setItem(INVOICES_KEY, JSON.stringify(invoices));
+    
+    // Descontar stock de insumos en localStorage
+    const { requiredInsumos } = invoiceData;
+    if (requiredInsumos && requiredInsumos.length > 0) {
+      const insumos = JSON.parse(localStorage.getItem(INSUMOS_KEY) || '[]');
+      for (const req of requiredInsumos) {
+        const insumoIndex = insumos.findIndex(i => i.id === req.id_insumo);
+        if (insumoIndex !== -1) {
+          insumos[insumoIndex].stock_actual = Math.max(0, (insumos[insumoIndex].stock_actual || 0) - req.cantidad_total);
+        }
+      }
+      localStorage.setItem(INSUMOS_KEY, JSON.stringify(insumos));
+    }
+    
     return { success: true, facturaId, message: 'Factura procesada (Navegador)' };
   }
 

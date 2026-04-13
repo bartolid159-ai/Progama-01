@@ -41,21 +41,40 @@ const InvoiceForm = ({ onProcessComplete }) => {
   }, []);
 
   const loadInitialData = async () => {
-    const [doctorsData, servicesData] = await Promise.all([
-      doctorService.getDoctors(),
-      serviceLogic.getServices()
-    ]);
-    setDoctors(doctorsData);
-    setServices(servicesData);
-    
-    const insumosMap = {};
-    for (const svc of servicesData) {
-      const insumos = await serviceLogic.getInsumosByServicio(svc.id);
-      if (insumos && insumos.length > 0) {
-        insumosMap[svc.id] = insumos;
+    try {
+      const [doctorsData, servicesData] = await Promise.all([
+        doctorService.getDoctors(),
+        serviceLogic.getServices()
+      ]);
+      setDoctors(doctorsData);
+      setServices(servicesData);
+      
+      // Cargar insumos para cada servicio
+      const insumosMap = {};
+      for (const svc of servicesData) {
+        const svcId = Number(svc.id);
+        
+        // Intentar obtener de svc.insumos primero, luego de la DB
+        let insumos = svc.insumos;
+        if (!insumos || insumos.length === 0) {
+          try {
+            insumos = await serviceLogic.getInsumosByServicio(svcId);
+          } catch(e) {
+            console.warn('[FACTURA] Error cargando insumos:', e);
+            insumos = [];
+          }
+        }
+        if (insumos && insumos.length > 0) {
+          insumosMap[svcId] = insumos.map(i => ({
+            id_insumo: Number(i.id_insumo),
+            cantidad: Number(i.cantidad)
+          }));
+        }
       }
+      setServiciosInsumos(insumosMap);
+    } catch (error) {
+      console.error('[FACTURA] Error cargando datos:', error);
     }
-    setServiciosInsumos(insumosMap);
   };
 
   const handlePatientSearch = useCallback(async (query) => {
@@ -143,16 +162,18 @@ const InvoiceForm = ({ onProcessComplete }) => {
     setShowConfirmModal(true);
   };
 
-  const executeInvoiceProcessing = async () => {
+const executeInvoiceProcessing = async () => {
     setShowConfirmModal(false);
     setIsProcessing(true);
 
-    try {
+try {
       const totals = billingEngine.calculateTotals(invoiceItems, exchangeRate);
       const doctor = doctors.find(d => Number(d.id) === Number(selectedDoctor));
       const commission = billingEngine.calculateCommission(totals.total_usd, doctor?.porcentaje_comision || 0);
       const requiredInsumos = billingEngine.getRequiredInsumos(invoiceItems, serviciosInsumos);
-
+      
+      console.log('[FACTURA] Insumos a descontar:', requiredInsumos);
+      
       const invoiceData = {
         id_paciente: selectedPatient.id,
         id_medico: Number(selectedDoctor),
@@ -168,9 +189,14 @@ const InvoiceForm = ({ onProcessComplete }) => {
       // Persistencia real en SQLite
       const result = await manager.processInvoice(invoiceData);
       const facturaId = result.facturaId || result.id_factura;
-
+      
+      // Mostrar resultado
+      const msgInsumos = requiredInsumos.length > 0 
+        ? ` (+ descontados: ${requiredInsumos.map(i => `${i.cantidad_total}×insumo ${i.id_insumo}`).join(', ')})`
+        : '';
+        
       setNotification({
-        message: `✅ Factura #${String(facturaId).padStart(4, '0')} procesada y guardada correctamente`,
+        message: `✅ Factura #${String(facturaId).padStart(4, '0')} procesada${msgInsumos}`,
         type: 'success'
       });
 
