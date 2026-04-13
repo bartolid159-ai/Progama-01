@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.8.0...v1.9.0) (2026-04-13)
+
+
+### Features
+
+* Tarea 10 - Sistema de Lotes FIFO y Mejora Visual de Compras ([b201357](https://github.com/bartolid159-ai/Progama-01/commit/b20135745202b6ee9ab6a06545ed417a92b6ebb1))
+* tarea-10 - sistema de lotes FIFO y mejora visual tabla de compras ([1e75ea5](https://github.com/bartolid159-ai/Progama-01/commit/1e75ea533f47062eb53f66545adb4692b8e6f191))
+
 ## [1.8.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.7.0...v1.8.0) (2026-04-13)
 
 
