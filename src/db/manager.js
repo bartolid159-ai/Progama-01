@@ -228,15 +228,11 @@ export const updateInsumo = (data) => {
   }
   const db = getDb();
   const stmt = db.prepare(`
-    UPDATE insumos 
-    SET codigo = @codigo,
-        nombre = @nombre, 
-        descripcion = @descripcion,
-        id_categoria = @id_categoria,
-        stock_actual = @stock_actual, 
-        stock_minimo = @stock_minimo, 
-        unidad_medida = @unidad_medida, 
-        costo_unitario_usd = @costo_unitario_usd
+    UPDATE insumos SET 
+      codigo = @codigo, nombre = @nombre, descripcion = @descripcion, 
+      id_categoria = @id_categoria, stock_actual = @stock_actual, 
+      stock_minimo = @stock_minimo, unidad_medida = @unidad_medida, 
+      costo_unitario_usd = @costo_unitario_usd
     WHERE id = @id
   `);
   return stmt.run(data);
@@ -451,6 +447,7 @@ export const getTasaDelDia = () => {
   
   return result ? result.valor_bcv : 1; // Default to 1 if no rates found
 };
+
 /**
  * Process a complete invoice with ACID transaction (Updated for PRD v2 Bimoneda).
  */
@@ -515,23 +512,13 @@ export const processInvoice = (invoiceData) => {
       });
     }
 
-    // 3. Stock
-    if (requiredInsumos && requiredInsumos.length > 0) {
-      const updateStock = db.prepare('UPDATE insumos SET stock_actual = stock_actual - ? WHERE id = ?');
-      for (const insumo of requiredInsumos) {
-        updateStock.run(insumo.cantidad_total, insumo.id_insumo);
-      }
-    }
-
     // 4. Asientos Bimoneda
     const insertAsiento = db.prepare(`
       INSERT INTO contabilidad_asientos (tipo, categoria, debe_usd, haber_usd, debe_ves, haber_ves, tasa_referencia, descripcion, referencia_id)
       VALUES (@tipo, @categoria, @debe_usd, @haber_usd, @debe_ves, @haber_ves, @tasa_referencia, @descripcion, @referencia_id)
     `);
 
-    // INGRESO por servicios (Cobra en DB: Debe vs Haber)
-    // Usualmente: Debe Banco (monto) vs Haber Ingreso (monto)
-    // Para simplificar segun PRD: Ingreso Total
+    // INGRESO por servicios
     insertAsiento.run({
       tipo: 'INGRESO',
       categoria: 'SERVICIO',
@@ -558,11 +545,37 @@ export const processInvoice = (invoiceData) => {
       });
     }
 
+    // 3. Stock y Lotes FIFO
     if (requiredInsumos && requiredInsumos.length > 0) {
+      const updateStock = db.prepare('UPDATE insumos SET stock_actual = stock_actual - ? WHERE id = ?');
+      const getLotes = db.prepare('SELECT id, cantidad_actual, costo_unitario_usd FROM insumo_lotes WHERE id_insumo = ? AND cantidad_actual > 0 ORDER BY fecha_ingreso ASC, id ASC');
+      const updateLote = db.prepare('UPDATE insumo_lotes SET cantidad_actual = ? WHERE id = ?');
+
       for (const req of requiredInsumos) {
-        const insumo = db.prepare('SELECT costo_unitario_usd FROM insumos WHERE id = ?').get(req.id_insumo);
-        if (insumo && insumo.costo_unitario_usd > 0) {
-          const costoUsd = round2(insumo.costo_unitario_usd * req.cantidad_total);
+        updateStock.run(req.cantidad_total, req.id_insumo);
+        
+        let cant_requerida = req.cantidad_total;
+        let costo_este_insumo = 0;
+        
+        const lotes = getLotes.all(req.id_insumo);
+        for (const lote of lotes) {
+          if (cant_requerida <= 0) break;
+          const a_descontar = Math.min(lote.cantidad_actual, cant_requerida);
+          updateLote.run(lote.cantidad_actual - a_descontar, lote.id);
+          cant_requerida -= a_descontar;
+          costo_este_insumo += (a_descontar * lote.costo_unitario_usd);
+        }
+        
+        // Fallback for remaining amount without lot data
+        if (cant_requerida > 0) {
+           const insumo = db.prepare('SELECT costo_unitario_usd FROM insumos WHERE id = ?').get(req.id_insumo);
+           if (insumo) {
+              costo_este_insumo += (cant_requerida * insumo.costo_unitario_usd);
+           }
+        }
+
+        if (costo_este_insumo > 0) {
+          const costoUsd = round2(costo_este_insumo);
           insertAsiento.run({
             tipo: 'EGRESO',
             categoria: 'COSTO_INSUMO',
@@ -571,7 +584,7 @@ export const processInvoice = (invoiceData) => {
             debe_ves: 0,
             haber_ves: round2(costoUsd * tasa_cambio),
             tasa_referencia: tasa_cambio,
-            descripcion: `Factura #${facturaId} - Costo insumo ID ${req.id_insumo}`,
+            descripcion: `Factura #${facturaId} - Costo insumo ID ${req.id_insumo} (FIFO)`,
             referencia_id: facturaId
           });
         }
@@ -581,7 +594,6 @@ export const processInvoice = (invoiceData) => {
     return { success: true, facturaId, message: 'Factura procesada (Bimoneda)' };
   });
 };
-
 
 export const getFacturaById = (id) => {
   const db = getDb();
@@ -612,7 +624,6 @@ export const getAllFacturas = () => {
     const patients = JSON.parse(localStorage.getItem(PATIENTS_KEY) || '[]');
     const doctors = JSON.parse(localStorage.getItem(DOCTORS_KEY) || '[]');
     
-    // "Join" manual
     return invoices.map(inv => {
       const patient = patients.find(p => p.id === inv.id_paciente);
       const doctor = doctors.find(d => d.id === inv.id_medico);
@@ -631,7 +642,6 @@ export const getAllFacturas = () => {
   }
 
   const db = getDb();
-  // Unimos con pacientes y médicos para obtener nombres en el historial
   const stmt = db.prepare(`
     SELECT f.*, 
            p.nombre AS paciente_nombre, p.cedula_rif AS paciente_cedula, p.telefono AS paciente_telefono,
@@ -643,7 +653,6 @@ export const getAllFacturas = () => {
   `);
   return stmt.all();
 };
-
 
 export const searchFacturas = (query) => {
   if (isBrowser) {
@@ -673,12 +682,6 @@ export const searchFacturas = (query) => {
   return stmt.all(searchTerm, searchTerm, searchTerm, searchTerm);
 };
 
-
-/**
- * Obtiene el monto total teórico del día desde los asientos contables.
- * @param {string} fecha - Fecha en formato YYYY-MM-DD
- * @returns {number} Total USD
- */
 export const getTeoricoCaja = (fecha) => {
   if (isBrowser) {
     const invoices = JSON.parse(localStorage.getItem(INVOICES_KEY) || '[]');
@@ -699,11 +702,6 @@ export const getTeoricoCaja = (fecha) => {
   return result ? (result.total || 0) : 0;
 };
 
-/**
- * Guarda el registro del cierre de caja en la base de datos.
- * @param {Object} data - Datos del cierre
- * @returns {Object} Resultado de la operación
- */
 export const guardarCierreCaja = (data) => {
   if (isBrowser) {
     const cierres = JSON.parse(localStorage.getItem('clinica_cierres_db') || '[]');
@@ -720,6 +718,111 @@ export const guardarCierreCaja = (data) => {
   return stmt.run({
     ...data,
     fecha: data.fecha || new Date().toISOString().split('T')[0]
+  });
+};
 
-});
+export const registrarCompra = (compraData) => {
+  return executeTransaction(() => {
+    const db = getDb();
+    const { proveedor, observaciones, items } = compraData;
+    
+    const totalUsd = items.reduce((sum, item) => sum + (item.cantidad * item.costo_unitario_usd), 0);
+    
+    const compraId = db.prepare(`
+      INSERT INTO compras (proveedor, total_usd, observaciones)
+      VALUES (@proveedor, @total_usd, @observaciones)
+    `).run({
+      proveedor: proveedor || '',
+      total_usd: Math.round(totalUsd * 100) / 100,
+      observaciones: observaciones || ''
+    }).lastInsertRowid;
+
+    const updateInsumo = db.prepare(`
+      UPDATE insumos 
+      SET stock_actual = stock_actual + @cantidad,
+          costo_unitario_usd = @costo_unitario_usd
+      WHERE id = @id_insumo
+    `);
+    
+    const insertDetalle = db.prepare(`
+      INSERT INTO compra_detalles (id_compra, id_insumo, cantidad, costo_unitario_usd)
+      VALUES (@id_compra, @id_insumo, @cantidad, @costo_unitario_usd)
+    `);
+
+    const insertLote = db.prepare(`
+      INSERT INTO insumo_lotes (id_insumo, id_compra, cantidad_inicial, cantidad_actual, costo_unitario_usd)
+      VALUES (@id_insumo, @id_compra, @cantidad, @cantidad, @costo_unitario_usd)
+    `);
+
+    for (const item of items) {
+      insertDetalle.run({
+        id_compra: compraId,
+        id_insumo: item.id_insumo,
+        cantidad: item.cantidad,
+        costo_unitario_usd: Math.round(item.costo_unitario_usd * 100) / 100
+      });
+      
+      insertLote.run({
+        id_insumo: item.id_insumo,
+        id_compra: compraId,
+        cantidad: item.cantidad,
+        costo_unitario_usd: Math.round(item.costo_unitario_usd * 100) / 100
+      });
+
+      updateInsumo.run({
+        id_insumo: item.id_insumo,
+        cantidad: item.cantidad,
+        costo_unitario_usd: Math.round(item.costo_unitario_usd * 100) / 100
+      });
+    }
+
+    return { success: true, compraId, message: 'Compra y lote registrados correctamente' };
+  });
+};
+
+export const getAllCompras = () => {
+  const db = getDb();
+  const stmt = db.prepare(`
+    SELECT c.*, 
+           (SELECT COUNT(*) FROM compra_detalles WHERE id_compra = c.id) AS num_items
+    FROM compras c
+    ORDER BY c.fecha DESC
+    LIMIT 100
+  `);
+  return stmt.all();
+};
+
+export const getCompraById = (id) => {
+  const db = getDb();
+  const compra = db.prepare('SELECT * FROM compras WHERE id = ?').get(id);
+  if (!compra) return null;
+  
+  const detalles = db.prepare(`
+    SELECT cd.*, i.nombre AS insumo_nombre, i.codigo AS insumo_codigo
+    FROM compra_detalles cd
+    JOIN insumos i ON cd.id_insumo = i.id
+    WHERE cd.id_compra = ?
+  `).all(id);
+  
+  return { ...compra, detalles };
+};
+
+export const validarStockInsumos = (requiredInsumos) => {
+  if (!requiredInsumos || requiredInsumos.length === 0) {
+    return { valido: true, faltantes: [] };
+  }
+
+  const db = getDb();
+  const faltantes = [];
+
+  for (const req of requiredInsumos) {
+    const insumo = db.prepare('SELECT id, nombre, stock_actual FROM insumos WHERE id = ?').get(req.id_insumo);
+    if (!insumo) {
+      faltantes.push({ id_insumo: req.id_insumo, nombre: `ID ${req.id_insumo}`, requerido: req.cantidad_total, disponible: 0 });
+    } else if (insumo.stock_actual < req.cantidad_total) {
+      faltantes.push({ id_insumo: req.id_insumo, nombre: insumo.nombre, requerido: req.cantidad_total, disponible: insumo.stock_actual });
+    }
+  }
+
+  return { valido: faltantes.length === 0, faltantes };
 };

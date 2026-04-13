@@ -144,6 +144,39 @@ CREATE TABLE IF NOT EXISTS clients (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Compras (Abastecimiento)
+CREATE TABLE IF NOT EXISTS compras (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+  proveedor TEXT,
+  total_usd REAL DEFAULT 0.0,
+  observaciones TEXT
+);
+
+-- Detalles de Compras
+CREATE TABLE IF NOT EXISTS compra_detalles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_compra INTEGER,
+  id_insumo INTEGER,
+  cantidad INTEGER NOT NULL,
+  costo_unitario_usd REAL NOT NULL,
+  FOREIGN KEY(id_compra) REFERENCES compras(id) ON DELETE CASCADE,
+  FOREIGN KEY(id_insumo) REFERENCES insumos(id)
+);
+
+-- Lotes de Insumos (FIFO)
+CREATE TABLE IF NOT EXISTS insumo_lotes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_insumo INTEGER NOT NULL,
+  id_compra INTEGER NOT NULL,
+  cantidad_inicial INTEGER NOT NULL,
+  cantidad_actual INTEGER NOT NULL,
+  costo_unitario_usd REAL NOT NULL,
+  fecha_ingreso DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(id_insumo) REFERENCES insumos(id),
+  FOREIGN KEY(id_compra) REFERENCES compras(id) ON DELETE CASCADE
+);
+
 -- Migraciones
 -- Nota: En SQLite no hay 'ADD COLUMN IF NOT EXISTS'. 
 -- Estos fallarán si ya existen, lo cual es manejado por el motor de BD al inicializar si se desea.

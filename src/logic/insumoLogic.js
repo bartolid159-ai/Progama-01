@@ -144,3 +144,92 @@ export const getInsumosConStockBajo = async () => {
   const db = getDbManager();
   return db.getInsumosConStockBajo();
 };
+
+export const validarStockInsumos = async (requiredInsumos) => {
+  if (!requiredInsumos || requiredInsumos.length === 0) {
+    return { valido: true, faltantes: [] };
+  }
+
+  if (isBrowser) {
+    const insumos = getBrowserInsumos();
+    const faltantes = [];
+    for (const req of requiredInsumos) {
+      const insumo = insumos.find(i => Number(i.id) === Number(req.id_insumo));
+      if (!insumo) {
+        faltantes.push({ id_insumo: req.id_insumo, nombre: `ID ${req.id_insumo}`, requerido: req.cantidad_total, disponible: 0 });
+      } else if (Number(insumo.stock_actual) < req.cantidad_total) {
+        faltantes.push({ id_insumo: req.id_insumo, nombre: insumo.nombre, requerido: req.cantidad_total, disponible: Number(insumo.stock_actual) });
+      }
+    }
+    return { valido: faltantes.length === 0, faltantes };
+  }
+
+  const db = getDbManager();
+  return db.validarStockInsumos(requiredInsumos);
+};
+
+export const registrarCompra = async (compraData) => {
+  const { proveedor, observaciones, items } = compraData;
+  
+  if (isBrowser) {
+    const compras = JSON.parse(localStorage.getItem('clinica_compras') || '[]');
+    const detallesLocal = JSON.parse(localStorage.getItem('clinica_compra_detalles') || '[]');
+    const nuevosInsumos = getBrowserInsumos();
+    
+    const totalUsd = items.reduce((sum, item) => sum + (item.cantidad * item.costo_unitario_usd), 0);
+    const compraId = Date.now();
+    
+    const nuevaCompra = {
+      id: compraId,
+      fecha: new Date().toISOString(),
+      proveedor: proveedor || '',
+      total_usd: totalUsd,
+      observaciones: observaciones || '',
+      num_items: items.length
+    };
+    compras.push(nuevaCompra);
+    localStorage.setItem('clinica_compras', JSON.stringify(compras));
+    
+    for (const item of items) {
+      detallesLocal.push({
+        id_compra: compraId,
+        id_insumo: item.id_insumo,
+        insumo_nombre: item.insumo_nombre,
+        insumo_codigo: item.insumo_codigo,
+        cantidad: item.cantidad,
+        costo_unitario_usd: item.costo_unitario_usd
+      });
+
+      const idx = nuevosInsumos.findIndex(i => Number(i.id) === Number(item.id_insumo));
+      if (idx !== -1) {
+        nuevosInsumos[idx].stock_actual = (Number(nuevosInsumos[idx].stock_actual) || 0) + Number(item.cantidad);
+        nuevosInsumos[idx].costo_unitario_usd = Number(item.costo_unitario_usd);
+      }
+    }
+    localStorage.setItem('clinica_compra_detalles', JSON.stringify(detallesLocal));
+    saveBrowserInsumos(nuevosInsumos);
+    
+    return { success: true, compraId, message: 'Compra registrada correctamente (Navegador)' };
+  }
+
+  const db = getDbManager();
+  return db.registrarCompra(compraData);
+};
+
+export const getAllCompras = async () => {
+  if (isBrowser) {
+    const compras = JSON.parse(localStorage.getItem('clinica_compras') || '[]');
+    const detalles = JSON.parse(localStorage.getItem('clinica_compra_detalles') || '[]');
+    return compras.map(c => ({
+      ...c,
+      detalles: detalles.filter(d => d.id_compra === c.id)
+    }));
+  }
+  const db = getDbManager();
+  const compras = db.getAllCompras();
+  // Adjuntamos detalles para la UI
+  return compras.map(c => {
+    const data = db.getCompraById(c.id);
+    return data ? data : c;
+  });
+};
