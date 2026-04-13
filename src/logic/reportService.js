@@ -65,15 +65,19 @@ export const getTopServicios = (limite = 5) => {
  * Alertas de Stock (Crítico <= Mínimo)
  */
 export const getStockAlertas = () => {
-  const db = getDb();
-  const query = `
-    SELECT i.id, i.codigo, i.nombre, i.stock_actual, i.stock_minimo, c.nombre as categoria
-    FROM insumos i
-    LEFT JOIN categorias_insumos c ON i.id_categoria = c.id
-    WHERE i.stock_actual <= i.stock_minimo
-    ORDER BY i.stock_actual ASC
-  `;
-  return db.prepare(query).all();
+  try {
+    const db = getDb();
+    return db.prepare(`
+      SELECT i.*, c.nombre AS categoria
+      FROM insumos i
+      LEFT JOIN categorias_insumos c ON i.id_categoria = c.id
+      WHERE i.stock_actual <= i.stock_minimo
+      ORDER BY i.stock_actual ASC
+    `).all();
+  } catch (error) {
+    console.error("Error fetching stock alerts:", error);
+    return [];
+  }
 };
 
 /**
