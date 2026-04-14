@@ -133,11 +133,22 @@ export const calcularDiferenciaCaja = (declarado, teorico) => {
   return { diferencia, estado };
 };
 
+/**
+ * Consolida el reporte de liquidación por médico para el período dado.
+ * @param {string} [fechaDesde]
+ * @param {string} [fechaHasta]
+ */
+export const getLiquidacionPorMedico = (fechaDesde, fechaHasta) => {
+  const { getResumenComisionesPorMedico, getComisionesMedico } = require('../db/manager');
+  return getResumenComisionesPorMedico();
+};
+
 export default {
   getKpiDia,
   getTopServicios,
   getStockAlertas,
   getFlujoDiario,
   getAuditoriaTasas,
-  calcularDiferenciaCaja
+  calcularDiferenciaCaja,
+  getLiquidacionPorMedico
 };
