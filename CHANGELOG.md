@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.1](https://github.com/bartolid159-ai/Progama-01/compare/v1.9.0...v1.9.1) (2026-04-15)
+
+
+### Bug Fixes
+
+* **liquidaciones:** compactar UI y corregir mapeo de comisiones en mo… ([3d960be](https://github.com/bartolid159-ai/Progama-01/commit/3d960bedd18b8fa9301b66d236df3d7c65994324))
+* **liquidaciones:** compactar UI y corregir mapeo de comisiones en modo navegador ([6c10e6a](https://github.com/bartolid159-ai/Progama-01/commit/6c10e6aa2a923d924ed2cbd71b338a451a382fef))
+* **tests:** corregir ambiguedad y etiquetas obsoletas en App.test.jsx (CI stability) ([fd18cf9](https://github.com/bartolid159-ai/Progama-01/commit/fd18cf911efbddf88dc357af5af9a3af6b6d13d5))
+* **tests:** corregir selector ambiguo en test de validacion de factura ([626eb40](https://github.com/bartolid159-ai/Progama-01/commit/626eb40b8884dd896c4b182e0984b07c86b5c9a6))
+
 ## [1.9.0](https://github.com/bartolid159-ai/Progama-01/compare/v1.8.0...v1.9.0) (2026-04-13)
 
 
