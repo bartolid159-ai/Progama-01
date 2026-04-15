@@ -1,6 +1,6 @@
 {
   "name": "constructor-programa-maestro",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Local-First administrative and accounting program",
   "main": "src/index.js",
   "type": "module",
