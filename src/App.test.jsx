@@ -30,8 +30,9 @@ describe('App - Billing Integration', () => {
       fireEvent.click(billingLink);
     });
     
-    expect(screen.getByText('Paciente *')).toBeDefined();
-    expect(screen.getByText('Médico Tratante *')).toBeDefined();
+    // Usamos el selector de label para no confundir con los links del sidebar (ej: "Pacientes")
+    expect(screen.getByText(/Paciente/i, { selector: 'label' })).toBeDefined();
+    expect(screen.getByText(/Tasa de Cambio/i, { selector: 'label' })).toBeDefined();
   });
 
   it('debe cambiar el título al navegar a facturación', async () => {
