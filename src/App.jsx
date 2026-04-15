@@ -13,6 +13,10 @@ import RevenueChart from './components/Dashboard/RevenueChart';
 import Banner from './components/Common/Banner';
 import Dashboard from './components/Dashboard/Dashboard';
 import CashClosing from './components/Settings/CashClosing';
+import SuppliesList from './components/Supplies/SuppliesList';
+import SupplyForm from './components/Supplies/SupplyForm';
+import PurchasesList from './components/Purchases/PurchasesList';
+import LiquidacionPanel from './components/Liquidation/LiquidacionPanel';
 import { crearBackup, limpiarBackupsAntiguos } from './logic/backupService';
 
 function App() {
@@ -30,6 +34,13 @@ function App() {
   // Service states
   const [showServiceForm, setShowServiceForm] = useState(false);
   const [editingService, setEditingService] = useState(null);
+  
+  // Supplies states
+  const [showSupplyForm, setShowSupplyForm] = useState(false);
+  const [editingSupply, setEditingSupply] = useState(null);
+  
+  // Purchases states
+  const [showPurchases, setShowPurchases] = useState(false);
   
   // Billing states
   const [billingSubView, setBillingSubView] = useState('form');
@@ -104,6 +115,19 @@ function App() {
     setShowServiceForm(true);
   };
 
+  // Supplies handlers
+  const handleSaveSupply = (message) => {
+    setShowSupplyForm(false);
+    setEditingSupply(null);
+    setBanner({ message, type: 'success' });
+    setActiveView('supplies');
+  };
+
+  const handleEditSupply = (supply) => {
+    setEditingSupply(supply);
+    setShowSupplyForm(true);
+  };
+
   const handleCancelForm = () => {
     setShowPatientForm(false);
     setEditingPatient(null);
@@ -111,6 +135,8 @@ function App() {
     setEditingDoctor(null);
     setShowServiceForm(false);
     setEditingService(null);
+    setShowSupplyForm(false);
+    setEditingSupply(null);
   };
 
   const closeBanner = () => setBanner({ ...banner, message: '' });
@@ -127,6 +153,9 @@ function App() {
       case 'services': return 'Gestión de Servicios';
       case 'billing': return 'Facturación';
       case 'cashClosing': return 'Cierre de Caja';
+      case 'supplies': return 'Inventario';
+      case 'purchases': return 'Compras';
+      case 'liquidation': return 'Liquidación de Médicos';
       default: return 'Sistema de Gestión';
     }
   };
@@ -145,8 +174,9 @@ function App() {
           <li className={activeView === 'billing' ? 'active' : ''} onClick={() => { setActiveView('billing'); setBillingSubView('form'); }}>Facturación</li>
           <li className={activeView === 'cashClosing' ? 'active' : ''} onClick={() => setActiveView('cashClosing')}>Caja (Cierre)</li>
           <li className={activeView === 'reports' ? 'active' : ''} onClick={() => setActiveView('reports')}>Reportes</li>
-          <li>Inventario</li>
-          <li>Liquidación</li>
+          <li className={activeView === 'supplies' ? 'active' : ''} onClick={() => setActiveView('supplies')}>Inventario</li>
+          <li className={activeView === 'purchases' ? 'active' : ''} onClick={() => setActiveView('purchases')}>Compras</li>
+          <li className={activeView === 'liquidation' ? 'active' : ''} onClick={() => setActiveView('liquidation')}>Liquidación</li>
         </ul>
       </nav>
       
@@ -213,6 +243,22 @@ function App() {
           />
         )}
 
+        {activeView === 'supplies' && (
+          <SuppliesList 
+            key={showSupplyForm ? 'editing' : 'list'}
+            onAddClick={() => setShowSupplyForm(true)} 
+            onEditClick={handleEditSupply} 
+          />
+        )}
+
+        {activeView === 'purchases' && (
+          <PurchasesList />
+        )}
+
+        {activeView === 'liquidation' && (
+          <LiquidacionPanel onShowBanner={handleShowBanner} />
+        )}
+
 
 
         {activeView === 'billing' && billingSubView === 'form' && (
@@ -253,6 +299,14 @@ function App() {
           <ServiceForm 
             service={editingService}
             onSave={handleSaveService} 
+            onCancel={handleCancelForm} 
+          />
+        )}
+
+        {showSupplyForm && (
+          <SupplyForm 
+            insumo={editingSupply}
+            onSave={handleSaveSupply} 
             onCancel={handleCancelForm} 
           />
         )}

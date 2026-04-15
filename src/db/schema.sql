@@ -183,3 +183,18 @@ CREATE TABLE IF NOT EXISTS insumo_lotes (
 -- Para esta implementación simple, los dejamos como referencia de evolución del esquema.
 -- ALTER TABLE facturas ADD COLUMN metodo_pago TEXT DEFAULT 'EFECTIVO_USD';
 -- ALTER TABLE facturas ADD COLUMN detalle_pago TEXT;
+
+-- Liquidaciones de Médicos (Tarea 11)
+CREATE TABLE IF NOT EXISTS liquidaciones_medicos (
+  id                INTEGER  PRIMARY KEY AUTOINCREMENT,
+  id_medico         INTEGER  NOT NULL,
+  fecha_pago        DATE     NOT NULL,
+  monto_pagado_usd  REAL     NOT NULL CHECK(monto_pagado_usd > 0),
+  tasa_cambio       REAL     NOT NULL DEFAULT 1,
+  monto_pagado_ves  REAL     NOT NULL DEFAULT 0.0,
+  metodo_pago       TEXT     NOT NULL DEFAULT 'EFECTIVO_USD'
+                             CHECK(metodo_pago IN ('EFECTIVO_USD','EFECTIVO_VES','TRANSFERENCIA_VES','TRANSFERENCIA_USD','PAGO_MOVIL')),
+  notas             TEXT,
+  creado_en         DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(id_medico) REFERENCES medicos(id)
+);
