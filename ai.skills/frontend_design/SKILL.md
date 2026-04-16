@@ -44,7 +44,6 @@ Interpreta con creatividad y toma decisiones inesperadas que se sientan genuinam
 
 IMPORTANTE: Adapta la complejidad de la implementación a la visión estética. Los diseños maximalistas requieren código elaborado con animaciones y efectos extensos. Los diseños minimalistas o refinados requieren sobriedad, precisión y una atención meticulosa al espaciado, la tipografía y los detalles sutiles. La elegancia reside en ejecutar bien la visión.
 
-Recuerda: Claude es capaz de realizar un trabajo creativo extraordinario. No te contengas, demuestra lo que realmente se puede crear cuando se piensa de forma innovadora y se apuesta por una visión distintiva.
 
 ## Tecnologías Obligatorias
 - **Tailwind CSS:** Utiliza siempre Tailwind para el estilizado, componentes modernos y layouts flexibles.
