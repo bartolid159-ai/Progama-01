@@ -21,7 +21,7 @@ import { crearBackup, limpiarBackupsAntiguos } from './logic/backupService';
 
 function App() {
   const [theme, setTheme] = useState('dark');
-  const [activeView, setActiveView] = useState('dashboard');
+  const [activeView, setActiveView] = useState('patients'); // Iniciamos en pacientes por defecto ahora que Dashboard es el último
   
   // Patient states
   const [showPatientForm, setShowPatientForm] = useState(false);
@@ -147,7 +147,7 @@ function App() {
 
   const getPageTitle = () => {
     switch (activeView) {
-      case 'dashboard': return 'Dashboard';
+      case 'accounting': return 'Contabilidad / Dashboard';
       case 'patients': return 'Gestión de Pacientes';
       case 'doctors': return 'Gestión de Médicos';
       case 'services': return 'Gestión de Servicios';
@@ -167,16 +167,15 @@ function App() {
           Médica<span>ERP</span>
         </div>
         <ul className="nav-links">
-          <li className={activeView === 'dashboard' ? 'active' : ''} onClick={() => setActiveView('dashboard')}>Dashboard</li>
           <li className={activeView === 'patients' ? 'active' : ''} onClick={() => setActiveView('patients')}>Pacientes</li>
           <li className={activeView === 'doctors' ? 'active' : ''} onClick={() => setActiveView('doctors')}>Médicos</li>
           <li className={activeView === 'services' ? 'active' : ''} onClick={() => setActiveView('services')}>Servicios</li>
           <li className={activeView === 'billing' ? 'active' : ''} onClick={() => { setActiveView('billing'); setBillingSubView('form'); }}>Facturación</li>
           <li className={activeView === 'cashClosing' ? 'active' : ''} onClick={() => setActiveView('cashClosing')}>Caja (Cierre)</li>
-          <li className={activeView === 'reports' ? 'active' : ''} onClick={() => setActiveView('reports')}>Reportes</li>
           <li className={activeView === 'supplies' ? 'active' : ''} onClick={() => setActiveView('supplies')}>Inventario</li>
           <li className={activeView === 'purchases' ? 'active' : ''} onClick={() => setActiveView('purchases')}>Compras</li>
           <li className={activeView === 'liquidation' ? 'active' : ''} onClick={() => setActiveView('liquidation')}>Liquidación</li>
+          <li className={activeView === 'accounting' ? 'active' : ''} onClick={() => setActiveView('accounting')}>Contabilidad</li>
         </ul>
       </nav>
       
@@ -216,7 +215,7 @@ function App() {
 
         {banner.message && <Banner message={banner.message} type={banner.type} onClose={closeBanner} />}
         
-        {activeView === 'dashboard' && (
+        {activeView === 'accounting' && (
           <Dashboard onShowBanner={handleShowBanner} />
         )}
 

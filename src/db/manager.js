@@ -1073,3 +1073,35 @@ export const getAllLiquidaciones = () => {
   `);
   return stmt.all();
 };
+
+/**
+ * Elimina una factura y todos sus registros asociados (detalles y asientos).
+ * @param {number} id - ID de la factura a eliminar
+ */
+export const deleteFactura = (id) => {
+  if (isBrowser) {
+    const invoices = JSON.parse(localStorage.getItem(INVOICES_KEY) || '[]');
+    const filtered = invoices.filter(inv => inv.id !== id);
+    localStorage.setItem(INVOICES_KEY, JSON.stringify(filtered));
+    return { success: true, message: 'Factura eliminada (Navegador)' };
+  }
+
+  return executeTransaction(() => {
+    const db = getDb();
+    
+    // 1. Eliminar detalles de la factura
+    db.prepare('DELETE FROM factura_detalles WHERE id_factura = ?').run(id);
+    
+    // 2. Eliminar asientos contables asociados
+    db.prepare("DELETE FROM contabilidad_asientos WHERE referencia_id = ? AND categoria IN ('SERVICIO', 'COMISION', 'COSTO_INSUMO')").run(id);
+    
+    // 3. Eliminar la factura
+    const result = db.prepare('DELETE FROM facturas WHERE id = ?').run(id);
+    
+    if (result.changes === 0) {
+      throw new Error(`No se encontró la factura con ID ${id}`);
+    }
+
+    return { success: true, message: 'Factura y registros asociados eliminados correctamente' };
+  });
+};

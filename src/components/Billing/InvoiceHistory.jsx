@@ -1,10 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
 import * as manager from '../../db/manager';
+import SecurityModal from '../Common/SecurityModal';
+import { login } from '../../auth';
 
 const InvoiceHistory = () => {
   const [facturas, setFacturas] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Seguridad y Borrado
+  const [securityModal, setSecurityModal] = useState({ isOpen: false, invoiceId: null, error: '' });
 
   const loadFacturas = useCallback(async (query = '') => {
     setIsLoading(true);
@@ -29,6 +33,31 @@ const InvoiceHistory = () => {
     const q = e.target.value;
     setSearchQuery(q);
     loadFacturas(q);
+  };
+
+  const handleDeleteClick = (id) => {
+    setSecurityModal({ isOpen: true, invoiceId: id, error: '' });
+  };
+
+  const handleConfirmDelete = async (password) => {
+    try {
+      // Validamos contra el usuario administrador
+      const authResult = await login('admin', password);
+      
+      if (!authResult.success) {
+        setSecurityModal(prev => ({ ...prev, error: 'Clave incorrecta. Acceso denegado.' }));
+        return;
+      }
+
+      const result = await manager.deleteFactura(securityModal.invoiceId);
+      if (result.success) {
+        setSecurityModal({ isOpen: false, invoiceId: null, error: '' });
+        loadFacturas(searchQuery);
+      }
+    } catch (err) {
+      console.error('Error al eliminar factura:', err);
+      setSecurityModal(prev => ({ ...prev, error: 'Error del sistema al procesar el borrado.' }));
+    }
   };
 
   const formatDate = (fecha) => {
@@ -84,6 +113,7 @@ const InvoiceHistory = () => {
                 <th>Pago</th>
                 <th>Ref / Detalle</th>
                 <th>Estatus</th>
+                <th style={{ textAlign: 'center' }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -135,12 +165,31 @@ const InvoiceHistory = () => {
                       {f.estatus || 'PAGADA'}
                     </span>
                   </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <button 
+                      className="btn-icon" 
+                      onClick={() => handleDeleteClick(f.id)}
+                      title="Eliminar Factura"
+                      style={{ color: '#ff4444', background: 'rgba(255, 68, 68, 0.1)', border: '1px solid rgba(255, 68, 68, 0.2)' }}
+                    >
+                      🗑️
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+
+      <SecurityModal 
+        isOpen={securityModal.isOpen}
+        title="Confirmar Borrado de Factura"
+        message={`¿Está seguro que desea eliminar la factura #${String(securityModal.invoiceId).padStart(4, '0')}? Esta acción eliminará también los asientos contables asociados.`}
+        error={securityModal.error}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setSecurityModal({ isOpen: false, invoiceId: null, error: '' })}
+      />
     </div>
   );
 };
